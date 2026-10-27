@@ -12,7 +12,6 @@ A deployable, end-to-end setup of the [Microsoft FinOps toolkit](https://github.
 1. Read [ARCHITECTURE.md](ARCHITECTURE.md) for what gets deployed and how data flows.
 2. Follow [DEPLOYMENT-RUNBOOK.md](DEPLOYMENT-RUNBOOK.md) step by step. It starts with a table of the values you choose (tenant, subscription, regions, names).
 3. Set up the agent with [copilot-studio-agent/SETUP-INSTRUCTIONS.md](copilot-studio-agent/SETUP-INSTRUCTIONS.md).
-4. Optional: present it with [FINOPS-TOOLKIT-DEMO-GUIDE.md](FINOPS-TOOLKIT-DEMO-GUIDE.md).
 
 ## Repository layout
 
