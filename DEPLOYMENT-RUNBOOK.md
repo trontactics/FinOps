@@ -59,7 +59,7 @@ az resource create -g rg-finops-hub -n <capacity-name> --resource-type Microsoft
 
 The script is idempotent. It creates the `FinOps Hub` workspace on the capacity, the `FinOpsHub` eventhouse, and the `Ingestion` and `Hub` KQL databases. It then runs the official v14 setup scripts on both databases (with raw retention 0) and prints the **Query URI**. Note the URI; later steps need it.
 
-Pause the capacity when you aren't using it to stop F2 charges. Queries and ingestion fail while it's paused. To pause and resume it on a schedule, see step 5b.
+Pause the capacity when you aren't using it to stop F2 charges. Queries and ingestion fail while it's paused.
 
 ## 2. FinOps hub
 
@@ -139,17 +139,6 @@ $la = Get-AzOperationalInsightsWorkspace -ResourceGroupName <aoe-prefix>-rg -Nam
 New-AzResourceGroupDeployment -ResourceGroupName <aoe-prefix>-rg -TemplateFile ./optimization-engine/views/workbooks/resources-inventory.bicep `
     -workbookSourceId $la.ResourceId -resourceTags @{ purpose = 'finops-toolkit' }
 ```
-
-### 5b. Optional: pause and resume the Fabric capacity on a schedule
-
-This uses the AOE Automation account, so it needs step 5 first. By default the capacity resumes at 08:00 and pauses at 17:00 (America/Chicago), Monday to Friday, and stays paused over the weekend. On resume, the runbook also reruns `ingestion_ExecuteETL` for every folder whose latest run in the past 96 hours failed, so exports that arrived while the capacity was paused get loaded.
-
-```powershell
-./deploy/Register-FabricCapacitySchedule.ps1 -NamePrefix <aoe-prefix> -CapacityName <capacity-name> `
-    -ResumeTime 08:00 -PauseTime 17:00 -TimeZone 'America/Chicago'
-```
-
-To use the capacity outside the schedule, select **Resume** on the capacity in the Azure portal. The pause schedule stops it again on weekdays; on a weekend, pause it yourself.
 
 ## 6. Power BI
 
