@@ -1,0 +1,15 @@
+# Downloaded release artifacts (fetched during deployment)
+*.zip
+finops-hub-v14/
+PowerBI/
+*.pbit
+
+# Local deployment state and personal settings
+optimization-engine/last-deployment-state.json
+*.local.json
+.env
+
+# Editor and OS files
+.vscode/
+.DS_Store
+Thumbs.db

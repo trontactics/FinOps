@@ -1,0 +1,8 @@
+{
+  "SubscriptionId": "<subscription-id>",
+  "NamePrefix": "<aoe-prefix>",
+  "WorkspaceReuse": "n",
+  "DeployWorkbooks": "y",
+  "TargetLocation": "<aoe-region>",
+  "DeployBenefitsUsageDependencies": "n"
+}
