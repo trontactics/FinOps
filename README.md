@@ -5,6 +5,7 @@ A deployable, end-to-end setup of the [Microsoft FinOps toolkit](https://github.
 - **FinOps hub on Microsoft Fabric.** Cost Management exports are normalized to FOCUS 1.2 and served from a Fabric eventhouse, with a 12-page Fabric Real-Time Dashboard on top.
 - **Azure Optimization Engine (AOE).** Inventory, metrics, and Advisor data become optimization recommendations and Azure Workbooks.
 - **Copilot Studio agent.** Ask cost questions in plain English, and the agent runs KQL against the hub with the signed-in user's permissions.
+- **Fabric data agent.** The same kind of conversational cost analysis built natively in Fabric, with FinOps instructions and 10 tested example queries.
 - **Helper scripts** that fill gaps in the official tooling: eventhouse creation, AOE first-run initialization, workbook fixes, and an end-to-end verification test.
 
 ## Get started
@@ -17,10 +18,11 @@ A deployable, end-to-end setup of the [Microsoft FinOps toolkit](https://github.
 
 | Path | Contents |
 |---|---|
-| `deploy/` | Helper scripts: `New-FinOpsFabricEventhouse.ps1`, `New-FinOpsHubDashboard.ps1`, `Initialize-AoeData.ps1`, `Patch-AoeInventoryWorkbook.ps1`, and `Test-FinOpsDeployment.ps1` |
+| `deploy/` | Helper scripts: `New-FinOpsFabricEventhouse.ps1`, `New-FinOpsHubDashboard.ps1`, `New-FinOpsHubDataAgent.ps1`, `Initialize-AoeData.ps1`, `Patch-AoeInventoryWorkbook.ps1`, and `Test-FinOpsDeployment.ps1` |
 | `dashboard/` | Fabric Real-Time Dashboard template (FinOps toolkit v14 hub dashboard, 12 pages). Deploy it with `deploy/New-FinOpsHubDashboard.ps1`. |
 | `optimization-engine/` | Azure Optimization Engine v14 from the FinOps toolkit, with the workbook customizations described in the runbook. Edit `aoe-settings.json` before deploying. |
-| `copilot-studio-agent/` | Agent instructions, knowledge files, and setup guide |
+| `copilot-studio-agent/` | Copilot Studio agent instructions, knowledge files, and setup guide |
+| `data-agent/` | Fabric data agent instructions and example queries. Deploy them with `deploy/New-FinOpsHubDataAgent.ps1`. |
 
 Placeholders such as `<subscription-id>`, `<tenant-id>`, `<aoe-prefix>`, `<capacity-name>`, and `<eventhouse-id>.<zone>` appear throughout. Replace them with your own values. No tenant-specific values are stored in this repo.
 
@@ -28,7 +30,8 @@ Placeholders such as `<subscription-id>`, `<tenant-id>`, `<aoe-prefix>`, `<capac
 
 - An Azure subscription where you're Owner (or Contributor + Role Based Access Control Administrator), and Cost Management Contributor for exports
 - Microsoft Fabric enabled in the tenant. An F2 capacity costs about $263/month if it's always on; pause it when you aren't using it.
-- For the agent: a Copilot Studio license or trial, a Power Platform environment with Dataverse, and connector policies that allow **Azure Data Explorer**
+- For the Fabric data agent: the Copilot and AI agents tenant setting enabled
+- For the Copilot Studio agent: a Copilot Studio license or trial, a Power Platform environment with Dataverse, and connector policies that allow **Azure Data Explorer**
 - PowerShell 7 with `Az` and `FinOpsToolkit` 14.0, the Azure CLI, and the Bicep CLI
 
 ## Credits and license

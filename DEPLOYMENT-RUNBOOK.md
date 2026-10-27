@@ -162,6 +162,24 @@ To import it by hand instead: in the workspace, select **+ New item** > **Real-T
 
 Follow [`copilot-studio-agent/SETUP-INSTRUCTIONS.md`](copilot-studio-agent/SETUP-INSTRUCTIONS.md). Set the cluster URI in `agent-instructions.md` to the eventhouse Query URI **without** `https://`, and upload the three files from `copilot-studio-agent/knowledge/`. The setup guide also covers licensing, Dataverse, and connector policies, which commonly block a first setup.
 
+### 7b. Optional: Fabric data agent
+
+A Fabric data agent answers the same kinds of questions as the Copilot Studio agent, but it runs entirely in Fabric, with no Copilot Studio license, Dataverse, or connector policies. It needs a paid Fabric capacity (F2 or higher) and the tenant setting **Users can use Copilot, AI Agents and other AI experiences powered by Azure OpenAI**. If the capacity is outside the US or EU, it may also need the cross-geo processing settings.
+
+```powershell
+./deploy/New-FinOpsHubDataAgent.ps1
+```
+
+The script creates **FinOps Hub Data Agent** in the `FinOps Hub` workspace from the files in `data-agent/`:
+
+- `agent-instructions.md`: FinOps rules (default metric, date handling, dimensions, marketplace separation, output format)
+- `datasource-instructions.md`: how to use the `Hub` functions
+- `example-queries.json`: 10 question-and-KQL pairs (top subscriptions, services, and resource groups; monthly and daily trends; week over week; untagged spend; savings rate; top resources; and anomaly spikes)
+
+It selects `Costs_v1_2`, `Prices_v1_2`, `Recommendations_v1_2`, and `CommitmentDiscountUsage_v1_2` as the data source functions. Re-running the script replaces the agent's draft. Open the agent in Fabric, test it in the chat pane (for example, *"What are my top 5 services by cost in the last 30 days?"*), then select **Publish**. Users need Viewer on the workspace.
+
+After you publish it, the data agent can also be added to the Copilot Studio agent as a tool, so Fabric holds the query logic and Copilot Studio provides the chat in Teams or on the web.
+
 ## 8. Verify (read-only)
 
 ```powershell

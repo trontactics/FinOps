@@ -1,0 +1,42 @@
+[
+  {
+    "question": "What are my top 5 subscriptions by cost in the last 30 days?",
+    "query": "Costs_v1_2()\n| where ChargePeriodStart >= startofday(ago(30d))\n| summarize EffectiveCost = round(sum(EffectiveCost), 2) by SubAccountName, BillingCurrency\n| top 5 by EffectiveCost desc"
+  },
+  {
+    "question": "What are my top 10 services by cost last month?",
+    "query": "Costs_v1_2()\n| where BillingPeriodStart == startofmonth(startofmonth(now()) - 1d)\n| summarize EffectiveCost = round(sum(EffectiveCost), 2) by ServiceName, ServiceCategory, BillingCurrency\n| top 10 by EffectiveCost desc"
+  },
+  {
+    "question": "Show my monthly cost trend for the last 6 months",
+    "query": "Costs_v1_2()\n| where BillingPeriodStart >= startofmonth(ago(180d))\n| summarize EffectiveCost = round(sum(EffectiveCost), 2), BilledCost = round(sum(BilledCost), 2) by Month = BillingPeriodStart, BillingCurrency\n| order by Month asc"
+  },
+  {
+    "question": "How did cost change week over week?",
+    "query": "let thisWeek = startofweek(now()) - 7d;\nlet lastWeek = thisWeek - 7d;\nCosts_v1_2()\n| where ChargePeriodStart >= lastWeek and ChargePeriodStart < thisWeek + 7d\n| summarize\n    PriorWeek = round(sumif(EffectiveCost, ChargePeriodStart < thisWeek), 2),\n    LastFullWeek = round(sumif(EffectiveCost, ChargePeriodStart >= thisWeek), 2)\n    by ServiceName\n| extend Change = round(LastFullWeek - PriorWeek, 2), ChangePercent = round(iff(PriorWeek == 0, real(null), 100.0 * (LastFullWeek - PriorWeek) / PriorWeek), 1)\n| order by abs(Change) desc\n| take 10"
+  },
+  {
+    "question": "Which resource groups cost the most in the last 30 days?",
+    "query": "Costs_v1_2()\n| where ChargePeriodStart >= startofday(ago(30d))\n| summarize EffectiveCost = round(sum(EffectiveCost), 2), Resources = dcount(ResourceId) by x_ResourceGroupName, SubAccountName\n| top 10 by EffectiveCost desc"
+  },
+  {
+    "question": "Show daily cost for the last 30 days",
+    "query": "Costs_v1_2()\n| where ChargePeriodStart >= startofday(ago(30d))\n| summarize EffectiveCost = round(sum(EffectiveCost), 2) by Day = startofday(ChargePeriodStart)\n| order by Day asc"
+  },
+  {
+    "question": "How much of my spend is untagged?",
+    "query": "Costs_v1_2()\n| where ChargePeriodStart >= startofday(ago(30d))\n| extend IsUntagged = isempty(Tags) or tostring(Tags) == '{}'\n| summarize TotalCost = sum(EffectiveCost), UntaggedCost = sumif(EffectiveCost, IsUntagged)\n| extend UntaggedPercent = round(100.0 * UntaggedCost / TotalCost, 1), TotalCost = round(TotalCost, 2), UntaggedCost = round(UntaggedCost, 2)"
+  },
+  {
+    "question": "What was my effective savings rate last month?",
+    "query": "Costs_v1_2()\n| where BillingPeriodStart == startofmonth(startofmonth(now()) - 1d)\n| summarize ListCost = sum(ListCost), ContractedCost = sum(ContractedCost), EffectiveCost = sum(EffectiveCost)\n| extend TotalSavings = round(ListCost - EffectiveCost, 2), CommitmentSavings = round(ContractedCost - EffectiveCost, 2), EffectiveSavingsRate = round(iff(ListCost == 0, real(null), 100.0 * (ListCost - EffectiveCost) / ListCost), 2)\n| project ListCost = round(ListCost, 2), EffectiveCost = round(EffectiveCost, 2), TotalSavings, CommitmentSavings, EffectiveSavingsRate"
+  },
+  {
+    "question": "Which resources cost the most in the last 30 days?",
+    "query": "Costs_v1_2()\n| where ChargePeriodStart >= startofday(ago(30d))\n| summarize EffectiveCost = round(sum(EffectiveCost), 2), ResourceName = take_any(ResourceName), ServiceName = take_any(ServiceName) by ResourceId, x_ResourceGroupName\n| top 10 by EffectiveCost desc\n| project ResourceName, ServiceName, x_ResourceGroupName, EffectiveCost, ResourceId"
+  },
+  {
+    "question": "Are there any days with unusual cost spikes in the last 90 days?",
+    "query": "Costs_v1_2()\n| where ChargePeriodStart >= startofday(ago(90d)) and ChargePeriodStart < startofday(ago(2d))\n| summarize EffectiveCost = sum(EffectiveCost) by Day = startofday(ChargePeriodStart)\n| order by Day asc\n| summarize Days = make_list(Day), Costs = make_list(EffectiveCost)\n| extend (Anomalies, Score, Baseline) = series_decompose_anomalies(Costs, 2.0)\n| mv-expand Day = Days to typeof(datetime), Cost = Costs to typeof(real), Anomaly = Anomalies to typeof(int), Expected = Baseline to typeof(real)\n| where Anomaly != 0\n| project Day, EffectiveCost = round(Cost, 2), ExpectedCost = round(Expected, 2), Direction = iff(Anomaly > 0, 'Spike', 'Drop')"
+  }
+]
