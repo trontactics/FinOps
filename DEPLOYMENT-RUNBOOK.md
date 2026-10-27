@@ -157,6 +157,18 @@ Use the **KQL** report templates, because Fabric is a KQL backend. Download [Pow
 
 The AOE report is `optimization-engine/views/AzureOptimizationEngine.pbix`. Point it at `<aoe-prefix>-sql.database.windows.net` / `azureoptimization`.
 
+### 6b. Fabric Real-Time Dashboard
+
+Create the FinOps hub dashboard in the `FinOps Hub` workspace. It has 12 pages organized by FinOps Framework domain (Summary, Anomaly management, Data ingestion, Rate optimization, Licensing + SaaS, Budgeting, and Invoicing + chargeback), and every tile is a live KQL query against `Hub`:
+
+```powershell
+./deploy/New-FinOpsHubDashboard.ps1 -ClusterUri https://<eventhouse-id>.<zone>.kusto.fabric.microsoft.com
+```
+
+The template in `dashboard/finops-hub-dashboard.json` is the official v14 hub dashboard with one fix: the two *Commitment discount chargeback* tiles show an empty table instead of an error when there's no commitment discount usage. You need Contributor on the workspace to run the script. Re-running it replaces the dashboard's definition. Dashboard users need Viewer on the workspace. Tiles for reservations, savings plans, and Hybrid Benefit stay empty until that data exists.
+
+To import it by hand instead: in the workspace, select **+ New item** > **Real-Time Dashboard**, then **Manage** > **Replace with file**. Then go to **Manage** > **Data sources**, and point **Hub** at your eventhouse's `Hub` database.
+
 ## 7. Copilot Studio agent
 
 Follow [`copilot-studio-agent/SETUP-INSTRUCTIONS.md`](copilot-studio-agent/SETUP-INSTRUCTIONS.md). Set the cluster URI in `agent-instructions.md` to the eventhouse Query URI **without** `https://`, and upload the three files from `copilot-studio-agent/knowledge/`. The setup guide also covers licensing, Dataverse, and connector policies, which commonly block a first setup.

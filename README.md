@@ -2,7 +2,7 @@
 
 A deployable, end-to-end setup of the [Microsoft FinOps toolkit](https://github.com/microsoft/finops-toolkit) **v14**:
 
-- **FinOps hub on Microsoft Fabric.** Cost Management exports are normalized to FOCUS 1.2 and served from a Fabric eventhouse.
+- **FinOps hub on Microsoft Fabric.** Cost Management exports are normalized to FOCUS 1.2 and served from a Fabric eventhouse, with a 12-page Fabric Real-Time Dashboard on top.
 - **Azure Optimization Engine (AOE).** Inventory, metrics, and Advisor data become optimization recommendations and Azure Workbooks.
 - **Copilot Studio agent.** Ask cost questions in plain English, and the agent runs KQL against the hub with the signed-in user's permissions.
 - **Helper scripts** that fill gaps in the official tooling: eventhouse creation, AOE first-run initialization, a Fabric capacity pause/resume schedule, workbook fixes, and an end-to-end verification test.
@@ -17,7 +17,8 @@ A deployable, end-to-end setup of the [Microsoft FinOps toolkit](https://github.
 
 | Path | Contents |
 |---|---|
-| `deploy/` | Helper scripts: `New-FinOpsFabricEventhouse.ps1`, `Initialize-AoeData.ps1`, `Register-FabricCapacitySchedule.ps1` (+ `runbooks/Set-FabricCapacityState.ps1`), `Patch-AoeInventoryWorkbook.ps1`, and `Test-FinOpsDeployment.ps1` |
+| `deploy/` | Helper scripts: `New-FinOpsFabricEventhouse.ps1`, `New-FinOpsHubDashboard.ps1`, `Initialize-AoeData.ps1`, `Register-FabricCapacitySchedule.ps1` (+ `runbooks/Set-FabricCapacityState.ps1`), `Patch-AoeInventoryWorkbook.ps1`, and `Test-FinOpsDeployment.ps1` |
+| `dashboard/` | Fabric Real-Time Dashboard template (FinOps toolkit v14 hub dashboard, 12 pages). Deploy it with `deploy/New-FinOpsHubDashboard.ps1`. |
 | `optimization-engine/` | Azure Optimization Engine v14 from the FinOps toolkit, with the workbook customizations described in the runbook. Edit `aoe-settings.json` before deploying. |
 | `copilot-studio-agent/` | Agent instructions, knowledge files, and setup guide |
 
