@@ -33,11 +33,12 @@ function Invoke-Fabric($Method, $Path, $Body)
 }
 
 $capacity = (Invoke-Fabric GET '/capacities').value | Where-Object displayName -eq $CapacityName
-if (-not $capacity) { throw "Capacity $CapacityName not visible in Fabric." }
-
 $ws = (Invoke-Fabric GET '/workspaces').value | Where-Object displayName -eq $WorkspaceName
+if (-not $capacity -and -not ($ws -and $ws.capacityId)) {
+    throw "Capacity $CapacityName isn't visible in Fabric for the signed-in user. Add yourself as a capacity admin (Azure portal > the capacity > Capacity administrators) and try again."
+}
 if (-not $ws) { $ws = Invoke-Fabric POST '/workspaces' @{ displayName = $WorkspaceName; capacityId = $capacity.id }; Write-Host "Created workspace $WorkspaceName" }
-elseif ($ws.capacityId -ne $capacity.id) { Invoke-Fabric POST "/workspaces/$($ws.id)/assignToCapacity" @{ capacityId = $capacity.id } | Out-Null }
+elseif ($capacity -and $ws.capacityId -ne $capacity.id) { Invoke-Fabric POST "/workspaces/$($ws.id)/assignToCapacity" @{ capacityId = $capacity.id } | Out-Null }
 
 function Get-Eventhouse { (Invoke-Fabric GET "/workspaces/$($ws.id)/eventhouses").value | Where-Object displayName -eq $EventhouseName }
 $eh = Get-Eventhouse

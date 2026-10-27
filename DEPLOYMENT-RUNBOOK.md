@@ -1,6 +1,32 @@
 # FinOps toolkit deployment runbook (Fabric + AOE + Copilot Studio)
 
-Deploys FinOps toolkit **v14**: a FinOps hub backed by a Microsoft Fabric eventhouse, the Azure Optimization Engine (AOE) with its workbooks, Power BI reports, and the Copilot Studio agent. Run the steps in order. Every command runs from the repo root unless a step says otherwise.
+Deploys FinOps toolkit **v14**: a FinOps hub backed by a Microsoft Fabric eventhouse, the Azure Optimization Engine (AOE) with its workbooks, a Fabric Real-Time Dashboard and data agent, Power BI reports, and the Copilot Studio agent. Every command runs from the repo root unless a step says otherwise.
+
+## Quick start: one command
+
+`deploy/Deploy-FinOpsSolution.ps1` runs steps 0–5, 6b, 7b, and 8 in order. It creates the capacity, eventhouse, hub, Data Factory access, export, AOE (with first-run initialization), dashboard, and data agent, waits for the first cost data, and verifies everything. Meet the [prerequisites](#0-prerequisites) first, then:
+
+```powershell
+Connect-AzAccount -Tenant <tenant-id>
+az login --tenant <tenant-id>
+./deploy/Deploy-FinOpsSolution.ps1 -SubscriptionId <subscription-id> -HubRegion <hub-region> -AoeRegion <aoe-region> `
+    -CapacityName <capacity-name> -AoePrefix <aoe-prefix> -GrantGlobalReader
+```
+
+| Option | Use |
+|---|---|
+| `-Tags @{ <tag-name> = '<tag-value>' }` | Tags every new resource group and resource, for example a policy exemption tag your tenant requires |
+| `-GrantGlobalReader` | Grants Global Reader to the AOE identity (needs Privileged Role Administrator or Global Administrator). Leave it off if you don't have the role. |
+| `-CapacitySku F4` (and up) | A larger Fabric capacity. The default is F2. |
+| `-BackfillMonths 13` | Months of cost history to export (0–13) |
+| `-UpdateExisting` | Replaces the dashboard and the data agent draft with the repo versions |
+| `-Force` | Redeploys the hub template even if the hub exists |
+| `-SkipAoe`, `-SkipDashboard`, `-SkipDataAgent` | Leaves out those components |
+| `-DataWaitMinutes 60` | How long to wait for the first cost data before verifying (0 skips the wait) |
+
+A full first run takes about 1.5–3 hours, mostly AOE initialization and the first export. The script is safe to re-run. Each step checks what exists and skips work that's done, so you can re-run it to finish after an interruption or to verify an existing deployment. It ends with the few steps that remain manual: publishing the data agent, Power BI reports (step 6), and the Copilot Studio agent (step 7).
+
+The rest of this runbook describes each step individually, for manual deployment or troubleshooting.
 
 ## Values you choose
 

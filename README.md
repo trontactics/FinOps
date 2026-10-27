@@ -11,14 +11,14 @@ A deployable, end-to-end setup of the [Microsoft FinOps toolkit](https://github.
 ## Get started
 
 1. Read [ARCHITECTURE.md](ARCHITECTURE.md) for what gets deployed and how data flows.
-2. Follow [DEPLOYMENT-RUNBOOK.md](DEPLOYMENT-RUNBOOK.md) step by step. It starts with a table of the values you choose (tenant, subscription, regions, names).
+2. Deploy with one command: `./deploy/Deploy-FinOpsSolution.ps1` (see the [Quick start](DEPLOYMENT-RUNBOOK.md#quick-start-one-command)). [DEPLOYMENT-RUNBOOK.md](DEPLOYMENT-RUNBOOK.md) also explains each step, and starts with a table of the values you choose (tenant, subscription, regions, names).
 3. Set up the agent with [copilot-studio-agent/SETUP-INSTRUCTIONS.md](copilot-studio-agent/SETUP-INSTRUCTIONS.md).
 
 ## Repository layout
 
 | Path | Contents |
 |---|---|
-| `deploy/` | Helper scripts: `New-FinOpsFabricEventhouse.ps1`, `New-FinOpsHubDashboard.ps1`, `New-FinOpsHubDataAgent.ps1`, `Initialize-AoeData.ps1`, `Patch-AoeInventoryWorkbook.ps1`, and `Test-FinOpsDeployment.ps1` |
+| `deploy/` | `Deploy-FinOpsSolution.ps1` (one-command deployment), plus helper scripts: `New-FinOpsFabricEventhouse.ps1`, `New-FinOpsHubDashboard.ps1`, `New-FinOpsHubDataAgent.ps1`, `Initialize-AoeData.ps1`, `Patch-AoeInventoryWorkbook.ps1`, and `Test-FinOpsDeployment.ps1` |
 | `dashboard/` | Fabric Real-Time Dashboard template (FinOps toolkit v14 hub dashboard, 12 pages). Deploy it with `deploy/New-FinOpsHubDashboard.ps1`. |
 | `optimization-engine/` | Azure Optimization Engine v14 from the FinOps toolkit, with the workbook customizations described in the runbook. Edit `aoe-settings.json` before deploying. |
 | `copilot-studio-agent/` | Copilot Studio agent instructions, knowledge files, and setup guide |
