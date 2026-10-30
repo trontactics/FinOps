@@ -153,8 +153,16 @@ Write-Done "Eventhouse Query URI: $queryUri"
 #region 2. FinOps hub
 Write-Step 2 'FinOps hub'
 $dataFactory = Get-AzDataFactoryV2 -ResourceGroupName $HubResourceGroupName -ErrorAction SilentlyContinue | Select-Object -First 1
-if ($dataFactory -and -not $Force) { Write-Skip "hub exists (Data Factory $($dataFactory.DataFactoryName)); use -Force to redeploy" }
+# The hub template creates Data Factory before its deployment scripts run, so Data Factory alone doesn't prove the
+# hub finished. Trust the deployment record when there is one.
+$hubDeployment = Get-AzResourceGroupDeployment -ResourceGroupName $HubResourceGroupName -Name finops-hub-v14 -ErrorAction SilentlyContinue
+$deployHub = $Force -or -not $dataFactory -or ($hubDeployment -and $hubDeployment.ProvisioningState -ne 'Succeeded')
+if (-not $deployHub) {
+    $how = if ($hubDeployment) { 'deployment finops-hub-v14 succeeded' } else { "Data Factory $($dataFactory.DataFactoryName) exists" }
+    Write-Skip "hub exists ($how); use -Force to redeploy"
+}
 else {
+    if ($hubDeployment -and $hubDeployment.ProvisioningState -ne 'Succeeded') { Write-Host "  Previous hub deployment is $($hubDeployment.ProvisioningState); redeploying." -ForegroundColor Yellow }
     $work = Join-Path ([IO.Path]::GetTempPath()) "finops-hub-v14-$([guid]::NewGuid().ToString('N').Substring(0, 8))"
     New-Item -ItemType Directory $work | Out-Null
     Invoke-WebRequest https://github.com/microsoft/finops-toolkit/releases/download/v14/finops-hub-v14.zip -OutFile "$work/hub.zip"
@@ -167,7 +175,11 @@ else {
     $parameters | ConvertTo-Json -Depth 6 | Set-Content "$work/parameters.json"
     Write-Host '  Deploying the hub template (about 10-15 minutes)...'
     az deployment group create -g $HubResourceGroupName -n finops-hub-v14 --template-file "$work/main.bicep" --parameters "@$work/parameters.json" -o none
-    if ($LASTEXITCODE) { throw 'The FinOps hub deployment failed. Check the deployment in the Azure portal.' }
+    if ($LASTEXITCODE) {
+        throw ("The FinOps hub deployment failed. Open $HubResourceGroupName > Deployments > finops-hub-v14 for details. " +
+            "If it mentions an '*azscripts' storage account, KeyBasedAuthenticationNotPermitted, or RequestDisallowedByPolicy, " +
+            "Azure Policy is blocking the deployment (see ARCHITECTURE.md §7). Get an exemption, then re-run with -Force.")
+    }
     Remove-Item $work -Recurse -Force
     $dataFactory = Get-AzDataFactoryV2 -ResourceGroupName $HubResourceGroupName | Select-Object -First 1
     Write-Done "Deployed hub $HubName"
@@ -208,8 +220,10 @@ else {
 #region 5. Azure Optimization Engine
 Write-Step 5 'Azure Optimization Engine'
 if ($SkipAoe) { Write-Skip '-SkipAoe' }
-elseif (Get-AzResource -ResourceGroupName "$AoePrefix-rg" -ResourceType Microsoft.Automation/automationAccounts -Name "$AoePrefix-auto" -ErrorAction SilentlyContinue) {
-    Write-Skip "AOE exists ($AoePrefix-auto)"
+elseif ((Get-AzResource -ResourceGroupName "$AoePrefix-rg" -ResourceType Microsoft.Automation/automationAccounts -Name "$AoePrefix-auto" -ErrorAction SilentlyContinue) -and
+        (Get-AzResource -ResourceGroupName "$AoePrefix-rg" -ResourceType Microsoft.Sql/servers -Name "$AoePrefix-sql" -ErrorAction SilentlyContinue) -and
+        (Get-AzResource -ResourceGroupName "$AoePrefix-rg" -ResourceType Microsoft.OperationalInsights/workspaces -Name "$AoePrefix-la" -ErrorAction SilentlyContinue)) {
+    Write-Skip "AOE exists ($AoePrefix-auto, $AoePrefix-sql, $AoePrefix-la)"
 }
 else {
     $settingsFile = Join-Path ([IO.Path]::GetTempPath()) "aoe-settings-$AoePrefix.json"
@@ -221,6 +235,10 @@ else {
     try {
         ./Deploy-AzureOptimizationEngine.ps1 -SilentDeploymentSettingsPath $settingsFile `
             -TemplateUri https://microsoft.github.io/finops-toolkit/deploy/optimization-engine/14.0/azuredeploy.bicep -ResourceTags $aoeTags
+    } catch {
+        throw ("AOE deployment failed: $($_.Exception.Message)`nAOE deploys at subscription scope: open Subscriptions > $SubscriptionId > " +
+            "Deployments > '$AoePrefix<timestamp>' for details, or the subscription Activity log for 'deny' policy entries. For a " +
+            "policy violation, get an exemption or pass the required -Tags / an allowed -AoeRegion, then re-run. Use -SkipAoe to finish the rest first.")
     } finally { Pop-Location; Remove-Item $settingsFile -ErrorAction SilentlyContinue }
     Write-Done 'Deployed AOE. Running first-run initialization (about 30-90 minutes)...'
     $initArgs = @{ NamePrefix = $AoePrefix }

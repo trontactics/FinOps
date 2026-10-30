@@ -26,6 +26,14 @@ az login --tenant <tenant-id>
 
 A full first run takes about 1.5–3 hours, mostly AOE initialization and the first export. The script is safe to re-run. Each step checks what exists and skips work that's done, so you can re-run it to finish after an interruption or to verify an existing deployment. It ends with the few steps that remain manual: publishing the data agent, Power BI reports (step 6), and the Copilot Studio agent (step 7).
 
+**If a step fails with a policy error.** Errors such as `RequestDisallowedByPolicy`, `InvalidTemplateDeployment ... policy violation`, `KeyBasedAuthenticationNotPermitted`, or `ResourceNotFound` on a `*azscripts` storage account mean Azure Policy blocked the deployment:
+
+- Hub errors appear in `rg-finops-hub` > **Deployments** > `finops-hub-v14`.
+- AOE deploys at **subscription** scope, so its errors appear in **Subscriptions** > your subscription > **Deployments** > `<aoe-prefix><timestamp>`.
+- The subscription **Activity log**, filtered to *Failed*, shows the `'deny' Policy action` entry that names the policy.
+
+Typical fixes are an allowed `-AoeRegion`, required tags with `-Tags`, or a policy exemption for both resource groups (see [ARCHITECTURE.md §7](ARCHITECTURE.md#7-networking-and-tenant-policy-constraints)). Then re-run the script; add `-Force` if the hub deployment failed. The script redeploys a hub whose last deployment didn't succeed, and `-SkipAoe` finishes everything else while an AOE exemption is pending.
+
 The rest of this runbook describes each step individually, for manual deployment or troubleshooting.
 
 ## Values you choose
