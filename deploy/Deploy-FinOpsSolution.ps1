@@ -192,8 +192,13 @@ $scope = "/subscriptions/$SubscriptionId"
 $exportName = "$HubName-costs"
 if (Get-FinOpsCostExport -Scope $scope -Name $exportName -ErrorAction SilentlyContinue) { Write-Skip "export $exportName exists" }
 else {
-    $storage = Get-AzStorageAccount -ResourceGroupName $HubResourceGroupName | Where-Object { $_.Kind -eq 'StorageV2' -and $_.EnableHierarchicalNamespace } | Select-Object -First 1
-    if (-not $storage) { throw "No hub storage account found in $HubResourceGroupName." }
+    # The hub template creates a Data Lake (hierarchical namespace) account, Premium BlockBlobStorage by default,
+    # tagged ftk-tool = 'FinOps hubs'. Prefer the tag; fall back to any Data Lake account in the resource group.
+    $lakeAccounts = @(Get-AzStorageAccount -ResourceGroupName $HubResourceGroupName | Where-Object EnableHierarchicalNamespace)
+    $storage = $lakeAccounts | Where-Object { $_.Tags -and $_.Tags['ftk-tool'] -eq 'FinOps hubs' } | Select-Object -First 1
+    if (-not $storage) { $storage = $lakeAccounts | Select-Object -First 1 }
+    if (-not $storage) { throw "No hub storage account (Data Lake, hierarchical namespace) found in $HubResourceGroupName. Check that step 2 deployed the hub." }
+    Write-Host "  Using hub storage account $($storage.StorageAccountName)"
     New-FinOpsCostExport -Name $exportName -Scope $scope -Dataset FocusCost -StorageAccountId $storage.Id -StorageContainer msexports `
         -StoragePath "subscriptions/$SubscriptionId" -DoNotOverwrite -Backfill $BackfillMonths -Execute | Out-Null
     Write-Done "Created export $exportName and started a $BackfillMonths-month backfill"
