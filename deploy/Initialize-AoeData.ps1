@@ -30,11 +30,29 @@ param(
     [switch] $SkipSuppressionSeed,
     [switch] $SkipRunbooks,
     [int] $WaveTimeoutMinutes = 90,
-    [int] $IngestionSettleMinutes = 20
+    [int] $IngestionSettleMinutes = 20,
+    # After a new Global Reader grant, wait this long before running jobs so the role takes effect for the identity.
+    [int] $RoleSettleMinutes = 15
 )
 
 $ErrorActionPreference = 'Stop'
 if (-not (Get-AzContext)) { throw 'Run Connect-AzAccount first.' }
+
+# Retries Azure calls that fail on transient network errors (dropped SSL connections, proxies, VPN reconnects).
+function Invoke-WithRetry([scriptblock] $Action, [string] $What, [int] $Attempts = 5)
+{
+    for ($i = 1; ; $i++)
+    {
+        try { return & $Action }
+        catch
+        {
+            if ($i -ge $Attempts) { throw }
+            Write-Host "  $What failed ($($_.Exception.Message)); retrying in $($i * 15) seconds..." -ForegroundColor Yellow
+            Start-Sleep -Seconds ($i * 15)
+        }
+    }
+}
+$newlyGranted = $false
 
 $automation = Get-AzAutomationAccount -ResourceGroupName $ResourceGroupName -Name $AutomationAccountName
 $principalId = $automation.Identity.PrincipalId
@@ -54,6 +72,7 @@ if ($GrantGlobalReader)
         $res = Invoke-AzRestMethod -Method POST -Uri 'https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignments' -Payload $body
         if ($res.StatusCode -ge 300) { throw "Global Reader assignment failed ($($res.StatusCode)): $($res.Content)" }
         Write-Host 'Granted Global Reader to the AOE managed identity.' -ForegroundColor Green
+        $newlyGranted = $true
     }
 }
 #endregion
@@ -96,6 +115,11 @@ END
 #region Run every scheduled job once, in dependency order
 if (-not $SkipRunbooks)
 {
+    if ($newlyGranted -and $RoleSettleMinutes -gt 0)
+    {
+        Write-Host "Waiting $RoleSettleMinutes minutes for the new Global Reader role to take effect before running jobs..." -ForegroundColor Cyan
+        Start-Sleep -Seconds ($RoleSettleMinutes * 60)
+    }
     $jobSchedules = Get-AzAutomationScheduledRunbook -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName |
         ForEach-Object { Get-AzAutomationScheduledRunbook -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName -JobScheduleId $_.JobScheduleId }
 
@@ -122,14 +146,19 @@ if (-not $SkipRunbooks)
         {
             $params = @{}
             if ($item.Parameters) { foreach ($key in $item.Parameters.Keys) { $params[$key] = $item.Parameters[$key] } }
-            Start-AzAutomationRunbook -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName -Name $item.RunbookName -Parameters $params
+            Invoke-WithRetry -What "Starting $($item.RunbookName)" {
+                Start-AzAutomationRunbook -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName -Name $item.RunbookName -Parameters $params
+            }
         }
 
         $deadline = (Get-Date).AddMinutes($WaveTimeoutMinutes)
         do
         {
             Start-Sleep -Seconds 30
-            $states = $jobs | ForEach-Object { Get-AzAutomationJob -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName -Id $_.JobId }
+            $states = $jobs | ForEach-Object {
+                $jobId = $_.JobId
+                Invoke-WithRetry -What 'Checking job status' { Get-AzAutomationJob -ResourceGroupName $ResourceGroupName -AutomationAccountName $AutomationAccountName -Id $jobId }
+            }
             $pending = @($states | Where-Object Status -notin 'Completed', 'Failed', 'Stopped', 'Suspended')
             Write-Host "  $($states.Count - $pending.Count)/$($states.Count) finished"
         } while ($pending.Count -gt 0 -and (Get-Date) -lt $deadline)
