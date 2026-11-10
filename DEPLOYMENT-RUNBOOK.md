@@ -188,7 +188,12 @@ Create the FinOps hub dashboard in the `FinOps Hub` workspace. It has 12 pages o
 ./deploy/New-FinOpsHubDashboard.ps1 -ClusterUri https://<eventhouse-id>.<zone>.kusto.fabric.microsoft.com
 ```
 
-The template in `dashboard/finops-hub-dashboard.json` is the official v14 hub dashboard with one fix: the two *Commitment discount chargeback* tiles show an empty table instead of an error when there's no commitment discount usage. You need Contributor on the workspace to run the script. Re-running it replaces the dashboard's definition. Dashboard users need Viewer on the workspace. Tiles for reservations, savings plans, and Hybrid Benefit stay empty until that data exists.
+The template in `dashboard/finops-hub-dashboard.json` is the official v14 hub dashboard with these changes:
+
+- **Tag filter.** Two extra dropdowns appear at the top of every page. **Tag name** lists your tag keys by cost, with **(any)** meaning no filter. **Tag value** lists that tag's values, plus **(all values)** and **(untagged)**, which shows the spend that's missing the tag. The filter is applied in the shared `CostsPlus` base query, so every cost tile respects it. Tag names and values are case-sensitive, so `prod` and `Production` are separate values, which is useful for spotting tagging inconsistencies.
+- **Empty-safe tables.** Tiles that pivot by month (the *Commitment discount chargeback* and *by hub instance* tables) show an empty table instead of an error when a filter or missing data leaves no rows.
+
+You need Contributor on the workspace to run the script. Re-running it replaces the dashboard's definition. Dashboard users need Viewer on the workspace. Tiles for reservations, savings plans, and Hybrid Benefit stay empty until that data exists.
 
 To import it by hand instead: in the workspace, select **+ New item** > **Real-Time Dashboard**, then **Manage** > **Replace with file**. Then go to **Manage** > **Data sources**, and point **Hub** at your eventhouse's `Hub` database.
 

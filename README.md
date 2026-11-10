@@ -19,7 +19,7 @@ A deployable, end-to-end setup of the [Microsoft FinOps toolkit](https://github.
 | Path | Contents |
 |---|---|
 | `deploy/` | `Deploy-FinOpsSolution.ps1` (one-command deployment), plus helper scripts: `New-FinOpsFabricEventhouse.ps1`, `New-FinOpsHubDashboard.ps1`, `New-FinOpsHubDataAgent.ps1`, `Initialize-AoeData.ps1`, `Patch-AoeInventoryWorkbook.ps1`, and `Test-FinOpsDeployment.ps1` |
-| `dashboard/` | Fabric Real-Time Dashboard template (FinOps toolkit v14 hub dashboard, 12 pages). Deploy it with `deploy/New-FinOpsHubDashboard.ps1`. |
+| `dashboard/` | Fabric Real-Time Dashboard template (FinOps toolkit v14 hub dashboard, 12 pages, with a tag filter). Deploy it with `deploy/New-FinOpsHubDashboard.ps1`. |
 | `optimization-engine/` | Azure Optimization Engine v14 from the FinOps toolkit, with the workbook customizations described in the runbook. Edit `aoe-settings.json` before deploying. |
 | `copilot-studio-agent/` | Copilot Studio agent instructions, knowledge files, and setup guide |
 | `data-agent/` | Fabric data agent instructions and example queries. Deploy them with `deploy/New-FinOpsHubDataAgent.ps1`. |
