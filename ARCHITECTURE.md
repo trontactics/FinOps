@@ -251,6 +251,7 @@ sequenceDiagram
 | Hub Data Factory managed identity | **Database admin** (`.add database … admins`) | Fabric `Ingestion` and `Hub` | Run ingest and extent-management commands |
 | Cost Management | Writes to `msexports` | Hub storage | Exports |
 | AOE Automation managed identity | Reader (set by the template) | Subscription | Resource Graph, Advisor, Monitor, Consumption |
+| AOE Automation managed identity | Reader (optional, `-AoeReaderManagementGroupId`) | Management group | The same data for every subscription below it |
 | AOE Automation managed identity | Storage Blob Data Contributor and Log Analytics access (template) | AOE storage and workspace | Stage CSVs, ingest |
 | AOE Automation managed identity | SQL access (template; Entra-only authentication) | AOE SQL | Recommendations, filters, control tables |
 | AOE Automation managed identity | **Global Reader** (Entra, granted manually) | Tenant | Identities and Roles workbook, expiring-credential recommendations |
