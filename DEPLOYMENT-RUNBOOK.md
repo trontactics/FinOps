@@ -19,6 +19,9 @@ az login --tenant <tenant-id>
 | `-GrantGlobalReader` | Grants Global Reader to the AOE identity (needs Privileged Role Administrator or Global Administrator). Leave it off if you don't have the role. |
 | `-CapacitySku F4` (and up) | A larger Fabric capacity. The default is F2. |
 | `-BackfillMonths 13` | Months of cost history to export (0–13) |
+| `-BillingAccountId <id>` | Exports cost for the whole billing account instead of only `-SubscriptionId`, plus price sheet and reservation recommendation exports. EA: the enrollment number. MCA: the billing account ID (`<guid>:<guid>_YYYY-MM-DD`). See [Billing account scope](#billing-account-scope). |
+| `-BillingProfileId <id>` | The MCA billing profile to export. Required with an MCA `-BillingAccountId`. |
+| `-AoeReaderManagementGroupId <id>` | Grants the AOE identity Reader on this management group, so AOE covers every subscription below it. The tenant root group's ID is the tenant ID. Needs Owner or User Access Administrator on the management group. |
 | `-UpdateExisting` | Replaces the dashboard and the data agent draft with the repo versions |
 | `-Force` | Redeploys the hub template even if the hub exists |
 | `-SkipAoe`, `-SkipDashboard`, `-SkipDataAgent` | Leaves out those components |
@@ -64,7 +67,8 @@ These names are fixed by the runbook. You can change them, but then update every
 - PowerShell 7 with `Az` and `FinOpsToolkit` 14.0 (`Install-Module FinOpsToolkit`), the Azure CLI, and the Bicep CLI on PATH. Az PowerShell doesn't find the copy installed by `az bicep install`, so add it first: `$env:PATH = "$HOME\.azure\bin;$env:PATH"`.
 - Owner (or Contributor + Role Based Access Control Administrator) on the subscription.
 - Fabric enabled in the tenant. Step 1 creates the capacity and workspace.
-- To create Cost Management exports: Cost Management Contributor on the subscription. For price sheet, reservation, and savings plan data: an EA billing account or MCA billing profile role (see [Known limitations](#known-limitations)).
+- To create Cost Management exports: Cost Management Contributor on the subscription. For billing account scope (`-BillingAccountId`), and for price sheet, reservation, and savings plan data: Enterprise Administrator (EA) or Billing profile owner or contributor (MCA) (see [Known limitations](#known-limitations)).
+- Optional, for `-AoeReaderManagementGroupId`: Owner or User Access Administrator on the management group.
 - Optional: a Microsoft Entra role that can assign directory roles (Privileged Role Administrator or Global Administrator), for AOE's Identities and Roles workbook.
 - Connect to Azure:
 
@@ -136,7 +140,33 @@ New-FinOpsCostExport -Name finops-hub-costs -Scope '/subscriptions/<subscription
     -StoragePath 'subscriptions/<subscription-id>' -DoNotOverwrite -Backfill 13 -Execute
 ```
 
-If you have an EA billing account or MCA billing profile, create the `PriceSheet` export **before** `FocusCost`, then `ReservationRecommendations`, at that billing scope. The commands are in the [hub deploy guide](https://learn.microsoft.com/cloud-computing/finops/toolkit/hubs/deploy#configure-scopes-to-monitor).
+### Billing account scope
+
+To cover every subscription in an EA billing account or MCA billing profile, export at that billing scope instead. Create the `PriceSheet` export **before** `FocusCost`, then `ReservationRecommendations`. `Deploy-FinOpsSolution.ps1 -BillingAccountId <id> [-BillingProfileId <id>]` does this for you. To do it manually:
+
+```powershell
+$scope = '/providers/Microsoft.Billing/billingAccounts/<billing-account-id>'   # MCA: append /billingProfiles/<billing-profile-id>
+$path  = $scope -replace '^/providers/Microsoft\.Billing/'
+New-FinOpsCostExport -Name finops-hub-prices -Scope $scope -Dataset PriceSheet -StorageAccountId $sa.Id `
+    -StorageContainer msexports -StoragePath $path -DoNotOverwrite -Execute
+New-FinOpsCostExport -Name finops-hub-costs -Scope $scope -Dataset FocusCost -StorageAccountId $sa.Id `
+    -StorageContainer msexports -StoragePath $path -DoNotOverwrite -Backfill 13 -Execute
+New-FinOpsCostExport -Name finops-hub-reservation-recs -Scope $scope -Dataset ReservationRecommendations -StorageAccountId $sa.Id `
+    -StorageContainer msexports -StoragePath $path -DoNotOverwrite -Execute
+```
+
+To find the IDs, run `az rest --method get --url "https://management.azure.com/providers/Microsoft.Billing/billingAccounts?api-version=2024-04-01" --query "value[].{id:name, agreement:properties.agreementType}" -o table`. For MCA, also list `.../billingAccounts/<id>/billingProfiles`. An empty list means your account has no billing role.
+
+**Switching an existing deployment from subscription to billing scope.** Don't keep both exports. The hub stores each scope in its own folder and only replaces data within the same folder, so the subscription's costs would be counted twice. When the script is re-run with `-BillingAccountId` and finds the subscription export, it does the following:
+
+1. Confirms you can read exports at the billing scope. If you can't, it stops without changing anything.
+2. Removes the subscription export and its files (`Remove-FinOpsCostExport -RemoveData`).
+3. Clears the ingested cost data (`.clear table Costs_final_v1_2 data` in the `Ingestion` database).
+4. Creates the billing exports.
+
+The dashboard, reports, and agents show no cost data until the billing backfill lands, typically a few hours, so schedule the switch accordingly.
+
+AOE's template grants its identity Reader on the deployment subscription only. To cover the rest of the estate, grant Reader on a management group (the script's `-AoeReaderManagementGroupId`). The daily runbooks pick up the new subscriptions on their next run.
 
 Wait for ingestion to finish, then confirm in the `Hub` queryset that `Costs_v1_2() | count` returns more than 0.
 
@@ -233,6 +263,6 @@ The test runs all 24 executable Copilot catalog queries against `Hub`, checks th
 - **Azure SQL region availability.** Some subscriptions, including many internal and trial subscriptions, can't create Azure SQL Database in popular regions such as West US 2, East US, and East US 2. If the AOE deployment fails on SQL, pick another `<aoe-region>` (West US 3, West US, and Central US often work), or open a *Service and subscription limits* support request.
 - **Benefits workbooks need EA/MCA billing data.** *Benefits Simulation*, *Benefits Usage*, *Reservations Potential*, *Reservations Usage*, and *Savings Plans Usage* query the `Pricesheet`, `ReservationsPrice`, `ReservationsUsage`, and `SavingsPlansUsage` tables. AOE only populates those when `DeployBenefitsUsageDependencies` is `y`, which requires an EA billing account or MCA billing profile plus `CustomerType`, `BillingAccountId`, and `CurrencyCode` (and `BillingProfileId` for MCA) in `aoe-settings.json`. Without them, these five workbooks show "Failed to resolve table", which is why this repo holds them back (see step 5).
 - **Identities and Roles workbook** needs Global Reader on the AOE identity. A Global Administrator or Privileged Role Administrator can run `./deploy/Initialize-AoeData.ps1 -NamePrefix <aoe-prefix> -GrantGlobalReader -SkipSuppressionSeed -SkipRunbooks`, or assign Global Reader to the `<aoe-prefix>-auto` managed identity under Entra ID > Roles and administrators. To keep your deployment login unaffected, run it under a separate Azure CLI profile (`AZURE_CONFIG_DIR`).
-- **Reservation recommendations** in the Rate optimization report and the agent's `Recommendations()` queries return no rows until a `ReservationRecommendations` export runs at an EA or MCA billing scope.
+- **Reservation recommendations** in the Rate optimization report and the agent's `Recommendations()` queries return no rows until a `ReservationRecommendations` export runs at an EA or MCA billing scope (`-BillingAccountId`).
 - **Data latency.** Cost data lags 24–48 hours. AOE metric-based recommendations improve after several days of collected metrics.
 - **Windows Git Bash.** When you pass resource IDs (`/subscriptions/...`) to `az` from Git Bash, prefix the command with `MSYS_NO_PATHCONV=1` and strip carriage returns (`| tr -d '\r'`). Otherwise the calls fail with `MissingSubscription` or `Bad Request`.

@@ -29,6 +29,7 @@ Placeholders such as `<subscription-id>`, `<tenant-id>`, `<aoe-prefix>`, `<capac
 ## Requirements at a glance
 
 - An Azure subscription where you're Owner (or Contributor + Role Based Access Control Administrator), and Cost Management Contributor for exports
+- To cover a whole billing account: Enterprise Administrator (EA) or Billing profile owner or contributor (MCA), and Owner or User Access Administrator on a management group for AOE
 - Microsoft Fabric enabled in the tenant. An F2 capacity costs about $263/month if it's always on; pause it when you aren't using it.
 - For the Fabric data agent: the Copilot and AI agents tenant setting enabled
 - For the Copilot Studio agent: a Copilot Studio license or trial, a Power Platform environment with Dataverse, and connector policies that allow **Azure Data Explorer**

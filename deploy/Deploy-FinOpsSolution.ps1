@@ -9,8 +9,11 @@
       1. Resource group, Fabric F-SKU capacity (resumed if paused), workspace, eventhouse, and Ingestion/Hub databases
       2. FinOps hub v14 template (skipped if the hub Data Factory exists, unless -Force)
       3. Data Factory managed identity as admin on the Ingestion and Hub databases
-      4. FOCUS cost export at subscription scope with backfill (skipped if it exists)
-      5. Azure Optimization Engine plus first-run initialization (skipped if the Automation account exists)
+      4. FOCUS cost export with backfill (skipped if it exists). Subscription scope by default; with -BillingAccountId,
+         billing scope plus price sheet and reservation recommendation exports. Switching an existing deployment to
+         billing scope removes the subscription export and clears its cost data, which the billing export replaces.
+      5. Azure Optimization Engine plus first-run initialization (skipped if the Automation account exists), and
+         Reader on -AoeReaderManagementGroupId so AOE covers every subscription under it
       6. Waits for the first cost data to reach the Hub database
       7. Real-Time Dashboard and data agent (skipped if they exist, unless -UpdateExisting)
       8. Read-only verification (Test-FinOpsDeployment.ps1)
@@ -31,6 +34,12 @@
     # Re-run to finish or repair a deployment, refreshing the dashboard and data agent from the repo
     ./deploy/Deploy-FinOpsSolution.ps1 -SubscriptionId <subscription-id> -HubRegion westus2 -AoeRegion westus3 `
         -CapacityName finopshubcap01 -AoePrefix finopsaoe01 -UpdateExisting
+
+.EXAMPLE
+    # Cover the whole billing account: MCA billing profile exports, and AOE Reader on the tenant root management group
+    ./deploy/Deploy-FinOpsSolution.ps1 -SubscriptionId <subscription-id> -HubRegion westus2 -AoeRegion westus3 `
+        -CapacityName finopshubcap01 -AoePrefix finopsaoe01 -SkipDataAgent `
+        -BillingAccountId '<guid>:<guid>_YYYY-MM-DD' -BillingProfileId <billing-profile-id> -AoeReaderManagementGroupId <tenant-id>
 #>
 [CmdletBinding()]
 param(
@@ -47,6 +56,13 @@ param(
     [string] $HubName = 'finops-hub',
     [string] $WorkspaceName = 'FinOps Hub',
     [ValidateRange(0, 13)] [int] $BackfillMonths = 13,
+    # Export the whole billing account instead of only -SubscriptionId. EA: the enrollment number. MCA: the billing
+    # account ID (<guid>:<guid>_YYYY-MM-DD) with -BillingProfileId. Needs a billing role that can create exports.
+    [string] $BillingAccountId,
+    [string] $BillingProfileId,
+    # Grant the AOE identity Reader on this management group so it covers every subscription below it. The tenant
+    # root group's ID is the tenant ID. Needs Owner or User Access Administrator on the management group.
+    [string] $AoeReaderManagementGroupId,
     # Extra tags for every resource group and resource, such as a policy exemption tag: @{ MyExemptionTag = 'value' }
     [hashtable] $Tags = @{},
     # Grant Microsoft Entra Global Reader to the AOE identity (needs Privileged Role Administrator or Global Administrator).
@@ -198,22 +214,57 @@ foreach ($database in 'Ingestion', 'Hub') {
 }
 #endregion
 
-#region 4. Cost Management export
+#region 4. Cost Management exports
 Write-Step 4 'Cost Management FOCUS export'
-$scope = "/subscriptions/$SubscriptionId"
+$subscriptionScope = "/subscriptions/$SubscriptionId"
+$scope = $subscriptionScope
+if ($BillingAccountId) {
+    $scope = "/providers/Microsoft.Billing/billingAccounts/$BillingAccountId"
+    if ($BillingAccountId -match ':') {
+        if (-not $BillingProfileId) { throw '-BillingProfileId is required with a Microsoft Customer Agreement billing account ID.' }
+        $scope += "/billingProfiles/$BillingProfileId"
+    }
+}
+# subscriptions/<id>, billingAccounts/<id>, or billingAccounts/<id>/billingProfiles/<id>
+$storagePath = $scope -replace '^/providers/Microsoft\.Billing/' -replace '^/'
 $exportName = "$HubName-costs"
-if (Get-FinOpsCostExport -Scope $scope -Name $exportName -ErrorAction SilentlyContinue) { Write-Skip "export $exportName exists" }
-else {
-    # The hub template creates a Data Lake (hierarchical namespace) account, Premium BlockBlobStorage by default,
-    # tagged ftk-tool = 'FinOps hubs'. Prefer the tag; fall back to any Data Lake account in the resource group.
-    $lakeAccounts = @(Get-AzStorageAccount -ResourceGroupName $HubResourceGroupName | Where-Object EnableHierarchicalNamespace)
-    $storage = $lakeAccounts | Where-Object { $_.Tags -and $_.Tags['ftk-tool'] -eq 'FinOps hubs' } | Select-Object -First 1
-    if (-not $storage) { $storage = $lakeAccounts | Select-Object -First 1 }
-    if (-not $storage) { throw "No hub storage account (Data Lake, hierarchical namespace) found in $HubResourceGroupName. Check that step 2 deployed the hub." }
-    Write-Host "  Using hub storage account $($storage.StorageAccountName)"
-    New-FinOpsCostExport -Name $exportName -Scope $scope -Dataset FocusCost -StorageAccountId $storage.Id -StorageContainer msexports `
-        -StoragePath "subscriptions/$SubscriptionId" -DoNotOverwrite -Backfill $BackfillMonths -Execute | Out-Null
-    Write-Done "Created export $exportName and started a $BackfillMonths-month backfill"
+Write-Host "  Export scope $scope"
+
+# Cost data lands in the hub under one folder per scope, and re-exports only replace data in the same folder. A
+# subscription export alongside a billing export would count that subscription twice, so switching to billing scope
+# removes the subscription export and its data. Check billing access first so nothing is removed if it's missing.
+if ($scope -ne $subscriptionScope -and (Get-FinOpsCostExport -Scope $subscriptionScope -Name $exportName -ErrorAction SilentlyContinue)) {
+    $probe = Invoke-AzRestMethod -Method GET -Path "$scope/providers/Microsoft.CostManagement/exports?api-version=2023-07-01-preview"
+    if ($probe.StatusCode -ne 200) {
+        throw "Can't read Cost Management exports at $scope (HTTP $($probe.StatusCode)). You need a billing role that can manage " +
+            'exports there (EA: Enterprise Administrator; MCA: Billing profile owner or contributor). Nothing was changed.'
+    }
+    Remove-FinOpsCostExport -Name $exportName -Scope $subscriptionScope -RemoveData | Out-Null
+    Invoke-Kusto $queryUri 'Ingestion' '.clear table Costs_final_v1_2 data' -Management | Out-Null
+    Write-Done "Removed subscription export $exportName and cleared its cost data; the billing export below replaces it"
+}
+
+# The hub template creates a Data Lake (hierarchical namespace) account, Premium BlockBlobStorage by default,
+# tagged ftk-tool = 'FinOps hubs'. Prefer the tag; fall back to any Data Lake account in the resource group.
+$lakeAccounts = @(Get-AzStorageAccount -ResourceGroupName $HubResourceGroupName | Where-Object EnableHierarchicalNamespace)
+$storage = $lakeAccounts | Where-Object { $_.Tags -and $_.Tags['ftk-tool'] -eq 'FinOps hubs' } | Select-Object -First 1
+if (-not $storage) { $storage = $lakeAccounts | Select-Object -First 1 }
+if (-not $storage) { throw "No hub storage account (Data Lake, hierarchical namespace) found in $HubResourceGroupName. Check that step 2 deployed the hub." }
+
+# The hub fills list and contracted prices from the price sheet, so export prices before costs. Price sheets and
+# reservation recommendations only exist at an EA billing account or MCA billing profile.
+$exports = @()
+if ($BillingAccountId) { $exports += @{ Name = "$HubName-prices"; Dataset = 'PriceSheet' } }
+$exports += @{ Name = $exportName; Dataset = 'FocusCost'; Backfill = $true }
+if ($BillingAccountId) { $exports += @{ Name = "$HubName-reservation-recs"; Dataset = 'ReservationRecommendations' } }
+foreach ($export in $exports) {
+    if (Get-FinOpsCostExport -Scope $scope -Name $export.Name -ErrorAction SilentlyContinue) { Write-Skip "export $($export.Name) exists"; continue }
+    $exportArgs = @{ Name = $export.Name; Scope = $scope; Dataset = $export.Dataset; StorageAccountId = $storage.Id
+                     StorageContainer = 'msexports'; StoragePath = $storagePath; DoNotOverwrite = $true; Execute = $true }
+    if ($export.Backfill) { $exportArgs.Backfill = $BackfillMonths }
+    New-FinOpsCostExport @exportArgs | Out-Null
+    if ($export.Backfill) { Write-Done "Created export $($export.Name) in $($storage.StorageAccountName) and started a $BackfillMonths-month backfill" }
+    else { Write-Done "Created export $($export.Name) in $($storage.StorageAccountName) and ran it" }
 }
 #endregion
 
@@ -245,6 +296,19 @@ else {
     if ($GrantGlobalReader) { $initArgs.GrantGlobalReader = $true }
     & (Join-Path $PSScriptRoot 'Initialize-AoeData.ps1') @initArgs
     Write-Done 'AOE initialized'
+}
+# The AOE template only grants Reader on -SubscriptionId. AOE collects from every subscription its identity can read.
+if ($AoeReaderManagementGroupId -and -not $SkipAoe) {
+    $aoeIdentityId = (Get-AzResource -ResourceGroupName "$AoePrefix-rg" -ResourceType Microsoft.Automation/automationAccounts `
+        -Name "$AoePrefix-auto" -ExpandProperties).Identity.PrincipalId
+    $mgScope = "/providers/Microsoft.Management/managementGroups/$AoeReaderManagementGroupId"
+    if (Get-AzRoleAssignment -ObjectId $aoeIdentityId -RoleDefinitionName Reader -Scope $mgScope -ErrorAction SilentlyContinue | Where-Object Scope -eq $mgScope) {
+        Write-Skip "AOE identity already has Reader on management group $AoeReaderManagementGroupId"
+    }
+    else {
+        New-AzRoleAssignment -ObjectId $aoeIdentityId -ObjectType ServicePrincipal -RoleDefinitionName Reader -Scope $mgScope | Out-Null
+        Write-Done "Granted the AOE identity Reader on management group $AoeReaderManagementGroupId; its daily runbooks pick up the new subscriptions"
+    }
 }
 #endregion
 
