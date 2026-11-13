@@ -239,7 +239,9 @@ if ($scope -ne $subscriptionScope -and (Get-FinOpsCostExport -Scope $subscriptio
         throw "Can't read Cost Management exports at $scope (HTTP $($probe.StatusCode)). You need a billing role that can manage " +
             'exports there (EA: Enterprise Administrator; MCA: Billing profile owner or contributor). Nothing was changed.'
     }
-    Remove-FinOpsCostExport -Name $exportName -Scope $subscriptionScope -RemoveData | Out-Null
+    # No -RemoveData: in FinOpsToolkit 14.0 it reads a property Get-FinOpsCostExport doesn't return and always fails.
+    # The raw export files can stay; the Fabric data that reports read is cleared below.
+    Remove-FinOpsCostExport -Name $exportName -Scope $subscriptionScope | Out-Null
     Invoke-Kusto $queryUri 'Ingestion' '.clear table Costs_final_v1_2 data' -Management | Out-Null
     Write-Done "Removed subscription export $exportName and cleared its cost data; the billing export below replaces it"
 }

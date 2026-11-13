@@ -160,7 +160,7 @@ To find the IDs, run `az rest --method get --url "https://management.azure.com/p
 **Switching an existing deployment from subscription to billing scope.** Don't keep both exports. The hub stores each scope in its own folder and only replaces data within the same folder, so the subscription's costs would be counted twice. When the script is re-run with `-BillingAccountId` and finds the subscription export, it does the following:
 
 1. Confirms you can read exports at the billing scope. If you can't, it stops without changing anything.
-2. Removes the subscription export and its files (`Remove-FinOpsCostExport -RemoveData`).
+2. Removes the subscription export (`Remove-FinOpsCostExport`). Its raw files stay in `msexports`, and nothing reads them again.
 3. Clears the ingested cost data (`.clear table Costs_final_v1_2 data` in the `Ingestion` database).
 4. Creates the billing exports.
 
