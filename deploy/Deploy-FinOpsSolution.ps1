@@ -225,8 +225,9 @@ if ($BillingAccountId) {
         $scope += "/billingProfiles/$BillingProfileId"
     }
 }
-# subscriptions/<id>, billingAccounts/<id>, or billingAccounts/<id>/billingProfiles/<id>
-$storagePath = $scope -replace '^/providers/Microsoft\.Billing/' -replace '^/'
+# subscriptions/<id>, billingAccounts/<id>, or billingAccounts/<id>/billingProfiles/<id>. Export paths can't contain
+# reserved URL characters, and MCA billing account IDs contain a colon, so replace anything outside A-Z 0-9 / _ . -
+$storagePath = $scope -replace '^/providers/Microsoft\.Billing/' -replace '^/' -replace '[^A-Za-z0-9/_.-]', '-'
 $exportName = "$HubName-costs"
 Write-Host "  Export scope $scope"
 

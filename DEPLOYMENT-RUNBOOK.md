@@ -146,7 +146,7 @@ To cover every subscription in an EA billing account or MCA billing profile, exp
 
 ```powershell
 $scope = '/providers/Microsoft.Billing/billingAccounts/<billing-account-id>'   # MCA: append /billingProfiles/<billing-profile-id>
-$path  = $scope -replace '^/providers/Microsoft\.Billing/'
+$path  = $scope -replace '^/providers/Microsoft\.Billing/' -replace '[^A-Za-z0-9/_.-]', '-'   # export paths can't contain ':'
 New-FinOpsCostExport -Name finops-hub-prices -Scope $scope -Dataset PriceSheet -StorageAccountId $sa.Id `
     -StorageContainer msexports -StoragePath $path -DoNotOverwrite -Execute
 New-FinOpsCostExport -Name finops-hub-costs -Scope $scope -Dataset FocusCost -StorageAccountId $sa.Id `
