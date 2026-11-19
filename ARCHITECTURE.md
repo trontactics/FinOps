@@ -32,7 +32,7 @@ For deployment steps, see [DEPLOYMENT-RUNBOOK.md](DEPLOYMENT-RUNBOOK.md).
 | AOE | Workbooks (6 deployed) | Under the Log Analytics workspace | Interactive analysis in the Azure portal. The 5 benefits workbooks are held back until EA/MCA billing access exists. |
 | Agent | Copilot Studio agent | `FinOps Hub Agent` | Turns natural-language questions into KQL and formats the results. |
 | Fabric | Data agent | `FinOps Hub Data Agent` | Fabric-native conversational agent over the `Hub` functions. It can also be used as a tool from Copilot Studio. |
-| Fabric | Real-Time Dashboard | `FinOps hub` | 12-page live dashboard, organized by FinOps Framework domain. |
+| Fabric | Real-Time Dashboard | `FinOps hub` | 13-page live dashboard, organized by FinOps Framework domain, with an AI costs page and tag and resource group filters. |
 
 ---
 

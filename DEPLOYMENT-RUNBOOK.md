@@ -212,7 +212,7 @@ The AOE report is `optimization-engine/views/AzureOptimizationEngine.pbix`. Poin
 
 ### 6b. Fabric Real-Time Dashboard
 
-Create the FinOps hub dashboard in the `FinOps Hub` workspace. It has 12 pages organized by FinOps Framework domain (Summary, Anomaly management, Data ingestion, Rate optimization, Licensing + SaaS, Budgeting, and Invoicing + chargeback), and every tile is a live KQL query against `Hub`:
+Create the FinOps hub dashboard in the `FinOps Hub` workspace. It has 13 pages organized by FinOps Framework domain (Summary, AI costs, Anomaly management, Data ingestion, Rate optimization, Licensing + SaaS, Budgeting, and Invoicing + chargeback), and every tile is a live KQL query against `Hub`:
 
 ```powershell
 ./deploy/New-FinOpsHubDashboard.ps1 -ClusterUri https://<eventhouse-id>.<zone>.kusto.fabric.microsoft.com
@@ -221,6 +221,8 @@ Create the FinOps hub dashboard in the `FinOps Hub` workspace. It has 12 pages o
 The template in `dashboard/finops-hub-dashboard.json` is the official v14 hub dashboard with these changes:
 
 - **Tag filter.** Two extra dropdowns appear at the top of every page. **Tag name** lists your tag keys by cost, with **(any)** meaning no filter. **Tag value** lists that tag's values, plus **(all values)** and **(untagged)**, which shows the spend that's missing the tag. The filter is applied in the shared `CostsPlus` base query, so every cost tile respects it. Tag names and values are case-sensitive, so `prod` and `Production` are separate values, which is useful for spotting tagging inconsistencies.
+- **Resource group filter.** A **Resource group** dropdown next to the tag filter limits every cost tile to the resource groups you pick, with **(all resource groups)** as the default and **(no resource group)** for costs not tied to one, such as purchases. It's also applied in `CostsPlus`. Names match across subscriptions and ignore case, so picking `rg-ai` includes every resource group with that name.
+- **AI costs page.** Under *Understand*, after *Summary*. It covers charges in the **AI and Machine Learning** service category, plus Cognitive Services and Machine Learning resources (Azure OpenAI, AI Foundry, AI Services, Machine Learning). It has a this-month vs. last-month summary and a monthly trend, then sections for services, models and meters (usage, cost, and cost per unit), resource groups, tag values for the selected **Tag name**, and resources. The tag and resource group filters apply. Cost is per resource and meter, not per application or user; for that, give each app its own resource or tags, or log usage through a gateway such as API Management.
 - **Empty-safe tables.** Tiles that pivot by month (the *Commitment discount chargeback* and *by hub instance* tables) show an empty table instead of an error when a filter or missing data leaves no rows.
 
 You need Contributor on the workspace to run the script. Re-running it replaces the dashboard's definition. Dashboard users need Viewer on the workspace. Tiles for reservations, savings plans, and Hybrid Benefit stay empty until that data exists.

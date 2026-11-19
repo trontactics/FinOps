@@ -2,7 +2,7 @@
 
 A deployable, end-to-end setup of the [Microsoft FinOps toolkit](https://github.com/microsoft/finops-toolkit) **v14**:
 
-- **FinOps hub on Microsoft Fabric.** Cost Management exports are normalized to FOCUS 1.2 and served from a Fabric eventhouse, with a 12-page Fabric Real-Time Dashboard on top.
+- **FinOps hub on Microsoft Fabric.** Cost Management exports are normalized to FOCUS 1.2 and served from a Fabric eventhouse, with a 13-page Fabric Real-Time Dashboard on top, including an AI costs page.
 - **Azure Optimization Engine (AOE).** Inventory, metrics, and Advisor data become optimization recommendations and Azure Workbooks.
 - **Copilot Studio agent.** Ask cost questions in plain English, and the agent runs KQL against the hub with the signed-in user's permissions.
 - **Fabric data agent.** The same kind of conversational cost analysis built natively in Fabric, with FinOps instructions and 10 tested example queries.
@@ -19,7 +19,7 @@ A deployable, end-to-end setup of the [Microsoft FinOps toolkit](https://github.
 | Path | Contents |
 |---|---|
 | `deploy/` | `Deploy-FinOpsSolution.ps1` (one-command deployment), plus helper scripts: `New-FinOpsFabricEventhouse.ps1`, `New-FinOpsHubDashboard.ps1`, `New-FinOpsHubDataAgent.ps1`, `Initialize-AoeData.ps1`, `Patch-AoeInventoryWorkbook.ps1`, and `Test-FinOpsDeployment.ps1` |
-| `dashboard/` | Fabric Real-Time Dashboard template (FinOps toolkit v14 hub dashboard, 12 pages, with a tag filter). Deploy it with `deploy/New-FinOpsHubDashboard.ps1`. |
+| `dashboard/` | Fabric Real-Time Dashboard template (FinOps toolkit v14 hub dashboard, 13 pages, with tag and resource group filters and an AI costs page). Deploy it with `deploy/New-FinOpsHubDashboard.ps1`. |
 | `optimization-engine/` | Azure Optimization Engine v14 from the FinOps toolkit, with the workbook customizations described in the runbook. Edit `aoe-settings.json` before deploying. |
 | `copilot-studio-agent/` | Copilot Studio agent instructions, knowledge files, and setup guide |
 | `data-agent/` | Fabric data agent instructions and example queries. Deploy them with `deploy/New-FinOpsHubDataAgent.ps1`. |

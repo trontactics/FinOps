@@ -4418,6 +4418,670 @@
         "table__renderLinks": [],
         "colorRules": []
       }
+    },
+    {
+      "id": "1d0c5133-9836-4ad8-bf64-49ab14c4add2",
+      "title": "AI summary",
+      "visualType": "multistat",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 3,
+        "width": 6,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "0700f881-b1eb-4711-a645-de3d0fb9490d"
+      },
+      "visualOptions": {
+        "multiStat__textSize": "auto",
+        "multiStat__valueColumn": null,
+        "colorRulesDisabled": false,
+        "colorStyle": "light",
+        "multiStat__displayOrientation": "vertical",
+        "multiStat__labelColumn": null,
+        "multiStat__slot": {
+          "width": 2,
+          "height": 2
+        },
+        "colorRules": [
+          {
+            "id": "a45d5307-a815-4baa-9743-d142253dc699",
+            "ruleType": "colorByCondition",
+            "applyToColumn": null,
+            "hideText": false,
+            "applyTo": "cells",
+            "conditions": [
+              {
+                "operator": "==",
+                "column": "IsThisMonth",
+                "values": [
+                  "true"
+                ]
+              }
+            ],
+            "chainingOperator": "and",
+            "colorStyle": "light",
+            "color": "blue",
+            "tag": "This month",
+            "icon": null,
+            "ruleName": "This month",
+            "visualType": "multistat"
+          },
+          {
+            "id": "a1307a22-3b48-48a9-9c1b-ef6b6a228796",
+            "ruleType": "colorByCondition",
+            "applyToColumn": null,
+            "hideText": false,
+            "applyTo": "cells",
+            "conditions": [
+              {
+                "operator": "==",
+                "column": "IsThisMonth",
+                "values": [
+                  "false"
+                ]
+              }
+            ],
+            "chainingOperator": "and",
+            "colorStyle": "light",
+            "color": "green",
+            "tag": "Last month",
+            "icon": null,
+            "ruleName": "Last month",
+            "visualType": "multistat"
+          }
+        ]
+      }
+    },
+    {
+      "id": "e5f44f88-36d0-497f-a9e2-b81432db98a0",
+      "title": "AI effective cost",
+      "visualType": "column",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 6,
+        "y": 3,
+        "width": 16,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "57d06457-0ea1-48ad-a7b3-e68ae383aff3"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "Effective cost",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [
+            {
+              "id": "e7c54e29-4843-465c-ab63-75e816da8fe0",
+              "columns": [
+                "Change"
+              ],
+              "label": "% change",
+              "yAxisMaximumValue": null,
+              "yAxisMinimumValue": null,
+              "yAxisScale": "linear",
+              "horizontalLines": []
+            }
+          ],
+          "showMultiplePanels": true
+        },
+        "hideLegend": true,
+        "legendLocation": "left",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        },
+        "dataPointsTooltip": {
+          "all": false,
+          "limit": 1
+        }
+      }
+    },
+    {
+      "id": "dbd97159-3c0a-4be5-aa74-e42a1abeb97f",
+      "title": "",
+      "visualType": "markdownCard",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 11,
+        "width": 22,
+        "height": 4
+      },
+      "markdownText": "# Services\r\nAI effective cost by service\r\n\r\n⬆️ [Top](?tile=357ca028-7d36-4578-aed9-3ab841509b86)",
+      "visualOptions": {}
+    },
+    {
+      "id": "42832397-2cb9-4918-98af-6099b14dfcb0",
+      "title": "Monthly trend by service name",
+      "visualType": "stackedcolumn",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 15,
+        "width": 22,
+        "height": 5
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "894eff1d-7bac-41b9-9f70-e88511210d8a"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "hideLegend": true,
+        "legendLocation": "right",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "9",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        },
+        "dataPointsTooltip": {
+          "all": false,
+          "limit": 1
+        }
+      }
+    },
+    {
+      "id": "d0fc11d9-3700-484e-a718-298132249cea",
+      "title": "Monthly trend by service name",
+      "visualType": "table",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 20,
+        "width": 22,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "2633a8a4-eb46-48b7-aabd-615db05a2c5b"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": false,
+        "colorStyle": "light",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "1997ea12-8493-4eb6-80e5-cf91cbf0ee2d",
+      "title": "",
+      "visualType": "markdownCard",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 28,
+        "width": 22,
+        "height": 4
+      },
+      "markdownText": "# Models + meters\r\nAI usage and cost by meter. For Azure OpenAI, meters are usually per model and per input or output tokens.\r\n\r\n⬆️ [Top](?tile=357ca028-7d36-4578-aed9-3ab841509b86)",
+      "visualOptions": {}
+    },
+    {
+      "id": "8bacb3a3-dc25-4a7f-86b9-803304947864",
+      "title": "Daily trend by meter (last n days)",
+      "visualType": "stackedcolumn",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 32,
+        "width": 22,
+        "height": 5
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "d96c06dd-b9f8-4848-873e-8c9394f07a5f"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "hideLegend": true,
+        "legendLocation": "right",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "9",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        },
+        "dataPointsTooltip": {
+          "all": false,
+          "limit": 1
+        }
+      }
+    },
+    {
+      "id": "97fba90e-d1af-4021-b3cd-21667a9afdd4",
+      "title": "Usage and cost by meter (last n months)",
+      "visualType": "table",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 37,
+        "width": 22,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "e3602a70-dd54-4d75-9cfe-81b58534d90e"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": false,
+        "colorStyle": "light",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "42fd8b28-6844-4741-9444-b91c40079645",
+      "title": "",
+      "visualType": "markdownCard",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 45,
+        "width": 22,
+        "height": 4
+      },
+      "markdownText": "# Resource groups\r\nAI effective cost by resource group\r\n\r\n⬆️ [Top](?tile=357ca028-7d36-4578-aed9-3ab841509b86)",
+      "visualOptions": {}
+    },
+    {
+      "id": "6b2d955a-3ac2-4ef5-85a3-e4597b440e34",
+      "title": "Monthly trend by resource group",
+      "visualType": "stackedcolumn",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 49,
+        "width": 22,
+        "height": 5
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "ceca582d-767a-49ca-8921-ced3d27f21a4"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "hideLegend": true,
+        "legendLocation": "right",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "9",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        },
+        "dataPointsTooltip": {
+          "all": false,
+          "limit": 1
+        }
+      }
+    },
+    {
+      "id": "6ee3df24-0cea-4e60-b42d-fb1f8451440e",
+      "title": "Monthly trend by resource group",
+      "visualType": "table",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 54,
+        "width": 22,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "27844176-8442-47c3-b36e-63d994b7f9d2"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": false,
+        "colorStyle": "light",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "32da7dc4-d580-4ba2-90f1-4a241e1796de",
+      "title": "",
+      "visualType": "markdownCard",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 62,
+        "width": 22,
+        "height": 4
+      },
+      "markdownText": "# Tags\r\nAI effective cost by value of the tag selected in **Tag name** at the top of the page\r\n\r\n⬆️ [Top](?tile=357ca028-7d36-4578-aed9-3ab841509b86)",
+      "visualOptions": {}
+    },
+    {
+      "id": "9252a18a-6787-481b-8b77-1a3452fda145",
+      "title": "Monthly trend by tag value",
+      "visualType": "stackedcolumn",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 66,
+        "width": 22,
+        "height": 5
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "af0e39ad-b5a0-49fa-aca0-e26856f53608"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "hideLegend": true,
+        "legendLocation": "right",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "9",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        },
+        "dataPointsTooltip": {
+          "all": false,
+          "limit": 1
+        }
+      }
+    },
+    {
+      "id": "9ad76a5f-c714-4663-a88f-df77c7cfca29",
+      "title": "Monthly trend by tag value",
+      "visualType": "table",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 71,
+        "width": 22,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "fe1e0e07-1466-4837-9027-1979ba60f699"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": false,
+        "colorStyle": "light",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "42af950f-ee91-47fe-bd87-c9b53acd78d2",
+      "title": "",
+      "visualType": "markdownCard",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 79,
+        "width": 22,
+        "height": 4
+      },
+      "markdownText": "# Resources\r\nAI effective cost by resource\r\n\r\n⬆️ [Top](?tile=357ca028-7d36-4578-aed9-3ab841509b86)",
+      "visualOptions": {}
+    },
+    {
+      "id": "91c9a483-1096-475a-8005-3d848b58168a",
+      "title": "Monthly trend by resource",
+      "visualType": "stackedcolumn",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 83,
+        "width": 22,
+        "height": 5
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "7f87f2ef-663c-4dc3-864f-d0a18d2549c4"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "hideLegend": true,
+        "legendLocation": "right",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "9",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        },
+        "dataPointsTooltip": {
+          "all": false,
+          "limit": 1
+        }
+      }
+    },
+    {
+      "id": "d0aeba94-6239-402e-b335-59c49e376568",
+      "title": "Daily trend by resource (last n days)",
+      "visualType": "stackedcolumn",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 88,
+        "width": 22,
+        "height": 5
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "7bb03f00-a3fe-426e-85c4-a1c919ad6d9b"
+      },
+      "visualOptions": {
+        "multipleYAxes": {
+          "base": {
+            "id": "-1",
+            "label": "",
+            "columns": [],
+            "yAxisMaximumValue": null,
+            "yAxisMinimumValue": null,
+            "yAxisScale": "linear",
+            "horizontalLines": []
+          },
+          "additional": [],
+          "showMultiplePanels": false
+        },
+        "hideLegend": true,
+        "legendLocation": "right",
+        "xColumnTitle": "",
+        "xColumn": null,
+        "yColumns": null,
+        "seriesColumns": null,
+        "xAxisScale": "linear",
+        "verticalLine": "9",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "selectedDataOnLoad": {
+          "all": true,
+          "limit": 10
+        },
+        "dataPointsTooltip": {
+          "all": false,
+          "limit": 1
+        }
+      }
+    },
+    {
+      "id": "cb9bd78e-2f10-4bd2-b645-b8adef8f1ecd",
+      "title": "Monthly trend by resource",
+      "visualType": "table",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 93,
+        "width": 22,
+        "height": 8
+      },
+      "queryRef": {
+        "kind": "query",
+        "queryId": "30bcc0a9-481f-42ec-b4d6-55003477961d"
+      },
+      "visualOptions": {
+        "table__enableRenderLinks": true,
+        "colorRulesDisabled": false,
+        "colorStyle": "light",
+        "crossFilterDisabled": false,
+        "drillthroughDisabled": false,
+        "crossFilter": [],
+        "drillthrough": [],
+        "table__renderLinks": [],
+        "colorRules": []
+      }
+    },
+    {
+      "id": "357ca028-7d36-4578-aed9-3ab841509b86",
+      "title": "",
+      "visualType": "markdownCard",
+      "pageId": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 22,
+        "height": 3
+      },
+      "markdownText": "AI costs are charges in the **AI and Machine Learning** service category, plus Cognitive Services and Machine Learning resources. The **Tag** and **Resource group** filters apply.\r\n\r\n&nbsp; [Services](?tile=dbd97159-3c0a-4be5-aa74-e42a1abeb97f)\r\n• [Models + meters](?tile=1997ea12-8493-4eb6-80e5-cf91cbf0ee2d)\r\n• [Resource groups](?tile=42fd8b28-6844-4741-9444-b91c40079645)\r\n• [Tags](?tile=32da7dc4-d580-4ba2-90f1-4a241e1796de)\r\n• [Resources](?tile=42af950f-ee91-47fe-bd87-c9b53acd78d2)",
+      "visualOptions": {}
     }
   ],
   "baseQueries": [
@@ -4450,6 +5114,16 @@
       "id": "48ebd897-d085-490f-8b4b-9b43d4fb2efc",
       "queryId": "eb9259cc-05b7-4441-a66d-a29026fe371b",
       "variableName": "CostsPlus"
+    },
+    {
+      "id": "2bbbadf1-1326-413a-bdae-f11e4e79f452",
+      "queryId": "1ceda759-0360-45fc-9ada-6046d110e824",
+      "variableName": "AICostsByMonth"
+    },
+    {
+      "id": "e6693d3d-f927-40fa-a637-84718668732b",
+      "queryId": "4c4588e2-9f97-4624-bcb9-7de29d6a6e92",
+      "variableName": "AICostsByDay"
     }
   ],
   "parameters": [
@@ -4586,6 +5260,32 @@
       "showOnPages": {
         "kind": "all"
       }
+    },
+    {
+      "kind": "string",
+      "id": "fd3be2ba-11de-4cda-a3de-5245675428de",
+      "displayName": "Resource group",
+      "description": "Resource groups to include, across all subscriptions. (no resource group) shows costs not tied to one, such as purchases.",
+      "variableName": "resourceGroups",
+      "selectionType": "array",
+      "includeAllOption": false,
+      "defaultValue": {
+        "kind": "query-result"
+      },
+      "dataSource": {
+        "queryRef": {
+          "queryId": "e628c82a-2773-4a1b-8598-cc013fd70b90",
+          "kind": "query"
+        },
+        "kind": "query",
+        "columns": {
+          "value": "ResourceGroup",
+          "label": "Label"
+        }
+      },
+      "showOnPages": {
+        "kind": "all"
+      }
     }
   ],
   "dataSources": [
@@ -4610,6 +5310,10 @@
     {
       "id": "f8ee3008-df7e-442f-825e-2e3b46e4c185",
       "name": "- Summary"
+    },
+    {
+      "id": "ccd76793-4d3b-49b3-9bd6-b476e6438d72",
+      "name": "- AI costs"
     },
     {
       "name": "- Anomaly management",
@@ -5583,12 +6287,13 @@
         "kind": "inline",
         "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
       },
-      "text": "Costs_v1_2\n//\n// Apply summarization settings\n| where ChargePeriodStart >= monthsago(numberOfMonths)\n| where isempty(selectedBillingCurrency) or BillingCurrency == selectedBillingCurrency\n| where isempty(tagName) or '*' in (tagValues) or tostring(Tags[tagName]) in (tagValues) or ('(untagged)' in (tagValues) and isempty(tostring(Tags[tagName])))\n| as filteredCosts\n| extend x_ChargeMonth = startofmonth(ChargePeriodStart)\n// TODO: Should we add granularity? -- | extend x_ReportingDate = iff(#\"Default Granularity\" == 'Monthly'), x_ChargeMonth, startofday(ChargePeriodStart))\n//\n// SKU details\n| extend x_SkuUsageType = tostring(coalesce(SkuPriceDetails.x_UsageType, x_SkuDetails.UsageType))\n| extend x_SkuLicenseUnusedQuantity = x_SkuLicenseQuantity - x_SkuCoreCount\n//\n// Commitment discounts\n| extend x_CommitmentDiscountKey = iff(isempty(x_SkuInstanceType), '', strcat(x_SkuInstanceType, x_SkuMeterId))\n| extend x_SkuTermLabel = case(isempty(x_SkuTerm) or x_SkuTerm <= 0, '', x_SkuTerm < 12, strcat(x_SkuTerm, ' month', iff(x_SkuTerm != 1, 's', '')), strcat(x_SkuTerm / 12, ' year', iff(x_SkuTerm != 12, 's', '')))\n//\n// CSP partners\n// x_PartnerBilledCredit = iff(x_PartnerCreditApplied, BilledCost * x_PartnerCreditRate, todouble(0))\n// x_PartnerEffectiveCredit = iff(x_PartnerCreditApplied, EffectiveCost * x_PartnerCreditRate, todouble(0))\n//\n// Toolkit\n| extend x_ToolkitTool = tostring(Tags['ftk-tool'])\n| extend x_ToolkitVersion = tostring(Tags['ftk-version'])\n| extend tmp_ResourceParent = database('Ingestion').parse_resourceid(Tags['cm-resource-parent'])\n| extend x_ResourceParentId = tostring(tmp_ResourceParent.ResourceId)\n| extend x_ResourceParentName = tostring(tmp_ResourceParent.ResourceName)\n| extend x_ResourceParentType = tostring(tmp_ResourceParent.ResourceType)\n//\n// TODO: Only add differentiators when the name is not unique\n| extend CommitmentDiscountNameUnique = iff(isempty(CommitmentDiscountId), '', strcat(CommitmentDiscountName, ' (', CommitmentDiscountType, ')'))\n| extend ResourceNameUnique           = iff(isempty(ResourceId),           '', strcat(ResourceName,           ' (', ResourceType, ')'))\n| extend x_ResourceGroupNameUnique    = iff(isempty(x_ResourceGroupName),  '', strcat(x_ResourceGroupName,    ' (', SubAccountName, ')'))\n| extend SubAccountNameUnique         = iff(isempty(SubAccountId),         '', strcat(SubAccountName,         ' (', split(SubAccountId, '/')[3], ')'))\n//\n// Explain why cost is 0\n| extend x_FreeReason = case(\n    BilledCost != 0.0 or EffectiveCost != 0.0, '',\n    PricingCategory == 'Committed', strcat('Unknown ', CommitmentDiscountStatus, ' Commitment'),\n    x_BilledUnitPrice == 0.0 and x_EffectiveUnitPrice == 0.0 and ContractedUnitPrice == 0.0 and ListUnitPrice == 0.0 and isempty(CommitmentDiscountType), case(\n        x_SkuDescription contains 'Trial', 'Trial',\n        x_SkuDescription contains 'Preview', 'Preview',\n        'Other'\n    ),\n    x_BilledUnitPrice > 0.0 or x_EffectiveUnitPrice > 0.0, case(\n        PricingQuantity > 0.0, 'Low Usage',\n        PricingQuantity == 0.0, 'No Usage',\n        'Unknown Negative Quantity'\n    ),\n    'Unknown'\n)\n//\n| extend x_ResourceTop1K = ChargeCategory != 'Usage' or isempty(ResourceId) or ResourceId in (\n    filteredCosts\n    | where isnotempty(ResourceId) and ChargeCategory == 'Usage'\n    | summarize sum(EffectiveCost) by ResourceId\n    | order by sum_EffectiveCost desc\n    | limit 1000\n    | distinct ResourceId\n)\n//\n| project-away tmp_ResourceParent",
+      "text": "Costs_v1_2\n//\n// Apply summarization settings\n| where ChargePeriodStart >= monthsago(numberOfMonths)\n| where isempty(selectedBillingCurrency) or BillingCurrency == selectedBillingCurrency\n| where isempty(tagName) or '*' in (tagValues) or tostring(Tags[tagName]) in (tagValues) or ('(untagged)' in (tagValues) and isempty(tostring(Tags[tagName])))\n| where '*' in (resourceGroups) or tolower(x_ResourceGroupName) in (resourceGroups) or ('(none)' in (resourceGroups) and isempty(x_ResourceGroupName))\n| as filteredCosts\n| extend x_ChargeMonth = startofmonth(ChargePeriodStart)\n// TODO: Should we add granularity? -- | extend x_ReportingDate = iff(#\"Default Granularity\" == 'Monthly'), x_ChargeMonth, startofday(ChargePeriodStart))\n//\n// SKU details\n| extend x_SkuUsageType = tostring(coalesce(SkuPriceDetails.x_UsageType, x_SkuDetails.UsageType))\n| extend x_SkuLicenseUnusedQuantity = x_SkuLicenseQuantity - x_SkuCoreCount\n//\n// Commitment discounts\n| extend x_CommitmentDiscountKey = iff(isempty(x_SkuInstanceType), '', strcat(x_SkuInstanceType, x_SkuMeterId))\n| extend x_SkuTermLabel = case(isempty(x_SkuTerm) or x_SkuTerm <= 0, '', x_SkuTerm < 12, strcat(x_SkuTerm, ' month', iff(x_SkuTerm != 1, 's', '')), strcat(x_SkuTerm / 12, ' year', iff(x_SkuTerm != 12, 's', '')))\n//\n// CSP partners\n// x_PartnerBilledCredit = iff(x_PartnerCreditApplied, BilledCost * x_PartnerCreditRate, todouble(0))\n// x_PartnerEffectiveCredit = iff(x_PartnerCreditApplied, EffectiveCost * x_PartnerCreditRate, todouble(0))\n//\n// Toolkit\n| extend x_ToolkitTool = tostring(Tags['ftk-tool'])\n| extend x_ToolkitVersion = tostring(Tags['ftk-version'])\n| extend tmp_ResourceParent = database('Ingestion').parse_resourceid(Tags['cm-resource-parent'])\n| extend x_ResourceParentId = tostring(tmp_ResourceParent.ResourceId)\n| extend x_ResourceParentName = tostring(tmp_ResourceParent.ResourceName)\n| extend x_ResourceParentType = tostring(tmp_ResourceParent.ResourceType)\n//\n// TODO: Only add differentiators when the name is not unique\n| extend CommitmentDiscountNameUnique = iff(isempty(CommitmentDiscountId), '', strcat(CommitmentDiscountName, ' (', CommitmentDiscountType, ')'))\n| extend ResourceNameUnique           = iff(isempty(ResourceId),           '', strcat(ResourceName,           ' (', ResourceType, ')'))\n| extend x_ResourceGroupNameUnique    = iff(isempty(x_ResourceGroupName),  '', strcat(x_ResourceGroupName,    ' (', SubAccountName, ')'))\n| extend SubAccountNameUnique         = iff(isempty(SubAccountId),         '', strcat(SubAccountName,         ' (', split(SubAccountId, '/')[3], ')'))\n//\n// Explain why cost is 0\n| extend x_FreeReason = case(\n    BilledCost != 0.0 or EffectiveCost != 0.0, '',\n    PricingCategory == 'Committed', strcat('Unknown ', CommitmentDiscountStatus, ' Commitment'),\n    x_BilledUnitPrice == 0.0 and x_EffectiveUnitPrice == 0.0 and ContractedUnitPrice == 0.0 and ListUnitPrice == 0.0 and isempty(CommitmentDiscountType), case(\n        x_SkuDescription contains 'Trial', 'Trial',\n        x_SkuDescription contains 'Preview', 'Preview',\n        'Other'\n    ),\n    x_BilledUnitPrice > 0.0 or x_EffectiveUnitPrice > 0.0, case(\n        PricingQuantity > 0.0, 'Low Usage',\n        PricingQuantity == 0.0, 'No Usage',\n        'Unknown Negative Quantity'\n    ),\n    'Unknown'\n)\n//\n| extend x_ResourceTop1K = ChargeCategory != 'Usage' or isempty(ResourceId) or ResourceId in (\n    filteredCosts\n    | where isnotempty(ResourceId) and ChargeCategory == 'Usage'\n    | summarize sum(EffectiveCost) by ResourceId\n    | order by sum_EffectiveCost desc\n    | limit 1000\n    | distinct ResourceId\n)\n//\n| project-away tmp_ResourceParent",
       "usedVariables": [
         "numberOfMonths",
         "selectedBillingCurrency",
         "tagName",
-        "tagValues"
+        "tagValues",
+        "resourceGroups"
       ]
     },
     {
@@ -5630,6 +6335,190 @@
       "usedVariables": [
         "numberOfMonths",
         "tagName"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "Costs_v1_2\n| where ChargePeriodStart >= monthsago(numberOfMonths)\n| where isnotempty(x_ResourceGroupName)\n| summarize Cost = sum(EffectiveCost), Label = take_any(x_ResourceGroupName) by ResourceGroup = tolower(x_ResourceGroupName)\n| extend _Order = 2\n| union (print ResourceGroup = '*', Label = '(all resource groups)', Cost = real(null), _Order = 0)\n| union (print ResourceGroup = '(none)', Label = '(no resource group)', Cost = real(null), _Order = 1)\n| order by _Order asc, Cost desc\n| project ResourceGroup, Label",
+      "id": "e628c82a-2773-4a1b-8598-cc013fd70b90",
+      "usedVariables": [
+        "numberOfMonths"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "CostsByMonth\n| where ServiceCategory == 'AI and Machine Learning' or x_ResourceType startswith 'microsoft.cognitiveservices/' or x_ResourceType startswith 'microsoft.machinelearningservices/'",
+      "id": "1ceda759-0360-45fc-9ada-6046d110e824",
+      "usedVariables": [
+        "CostsByMonth"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "CostsByDay\n| where ServiceCategory == 'AI and Machine Learning' or x_ResourceType startswith 'microsoft.cognitiveservices/' or x_ResourceType startswith 'microsoft.machinelearningservices/'",
+      "id": "4c4588e2-9f97-4624-bcb9-7de29d6a6e92",
+      "usedVariables": [
+        "CostsByDay"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let monthname = dynamic(['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);\nlet data = materialize(\n    AICostsByMonth\n    | where ChargePeriodStart >= startofmonth(now(), -1)\n    | summarize EffectiveCost = sum(EffectiveCost), Resources = dcountif(ResourceId, isnotempty(ResourceId)) by ChargePeriodStart\n    | extend Month = monthname[monthofyear(ChargePeriodStart)], IsThisMonth = ChargePeriodStart >= startofmonth(now())\n);\ndata | project Label = strcat('AI effective cost (', Month, ')'), Count = tolong(EffectiveCost), IsThisMonth, _Order = 0\n| union (data | project Label = strcat('AI resources (', Month, ')'), Count = tolong(Resources), IsThisMonth, _Order = 1)\n| order by _Order asc, IsThisMonth asc\n| project Label, Count, IsThisMonth",
+      "id": "0700f881-b1eb-4711-a645-de3d0fb9490d",
+      "usedVariables": [
+        "AICostsByMonth"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "AICostsByMonth\n| summarize EffectiveCost = sum(EffectiveCost) by BillingPeriodStart\n| order by BillingPeriodStart asc\n| extend PreviousEffectiveCost = prev(EffectiveCost)\n| project BillingPeriodStart, EffectiveCost, Change = iif(isempty(PreviousEffectiveCost), todouble(0), todouble((EffectiveCost - PreviousEffectiveCost) / PreviousEffectiveCost)) * 100",
+      "id": "57d06457-0ea1-48ad-a7b3-e68ae383aff3",
+      "usedVariables": [
+        "AICostsByMonth"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let costs = AICostsByMonth;\nlet all = costs | where isnotempty(ServiceName) | summarize sum(EffectiveCost) by ServiceName;\nlet count = toscalar(all | order by sum_EffectiveCost desc | count);\nlet topX = all | order by sum_EffectiveCost desc | limit maxGroupCount;\nlet otherId = '(others)';\ncosts\n//\n// Group rows after max count\n| extend inTopX = ServiceName in (topX)\n| extend ServiceName = iff(inTopX, ServiceName, otherId)\n//\n| summarize \n    EffectiveCost = round(sum(EffectiveCost), 2)\n    by\n    ChargePeriodStart,\n    ServiceName\n| project ChargePeriodStart, EffectiveCost, Category = ServiceName\n| order by EffectiveCost desc\n| render columnchart",
+      "id": "894eff1d-7bac-41b9-9f70-e88511210d8a",
+      "usedVariables": [
+        "AICostsByMonth",
+        "maxGroupCount"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let monthname = dynamic(['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);\nlet data = (\n    AICostsByMonth\n    | summarize \n        EffectiveCost  = sum(EffectiveCost)\n        by\n        ChargePeriodStart,\n        ServiceCategory,\n        ServiceName\n    | as per\n    | union (\n        per\n        | summarize \n            EffectiveCost  = sum(EffectiveCost)\n            by\n            ServiceCategory,\n            ServiceName\n    )\n    | order by ChargePeriodStart asc\n    | extend EffectiveCost = todouble(round(EffectiveCost, 2))\n    | extend ChargePeriod = iff(isempty(ChargePeriodStart), strcat('Total'), strcat(format_datetime(ChargePeriodStart, 'yyyy-MM - '), monthname[monthofyear(ChargePeriodStart)]))\n);\ndata | evaluate pivot(ChargePeriod, sum(EffectiveCost), ServiceName, ServiceCategory)\n| order by todouble(column_ifexists('Total', real(null))) desc",
+      "id": "2633a8a4-eb46-48b7-aabd-615db05a2c5b",
+      "usedVariables": [
+        "AICostsByMonth"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let costs = AICostsByDay | extend Meter = iff(isempty(SkuMeter), ServiceName, strcat(ServiceName, ': ', SkuMeter));\nlet topX = costs | summarize sum(EffectiveCost) by Meter | order by sum_EffectiveCost desc | limit maxGroupCount | project Meter;\ncosts\n| extend Meter = iff(Meter in (topX), Meter, '(others)')\n| summarize EffectiveCost = round(sum(EffectiveCost), 2) by ChargePeriodStart, Meter\n| order by EffectiveCost desc\n| render columnchart",
+      "id": "d96c06dd-b9f8-4848-873e-8c9394f07a5f",
+      "usedVariables": [
+        "AICostsByDay",
+        "maxGroupCount"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "AICostsByMonth\n| summarize\n    ConsumedQuantity = sum(ConsumedQuantity),\n    EffectiveCost = sum(EffectiveCost),\n    Resources = dcountif(ResourceId, isnotempty(ResourceId))\n    by ServiceName, x_SkuMeterSubcategory, SkuMeter, ConsumedUnit\n| extend EffectiveCostPerUnit = iff(ConsumedQuantity > 0, round(EffectiveCost / ConsumedQuantity, 6), real(null))\n| extend ConsumedQuantity = round(ConsumedQuantity, 2), EffectiveCost = round(EffectiveCost, 2)\n| project ServiceName, MeterSubcategory = x_SkuMeterSubcategory, SkuMeter, ConsumedQuantity, ConsumedUnit, EffectiveCost, EffectiveCostPerUnit, Resources\n| order by EffectiveCost desc",
+      "id": "e3602a70-dd54-4d75-9cfe-81b58534d90e",
+      "usedVariables": [
+        "AICostsByMonth"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let costs = AICostsByMonth | extend x_ResourceGroupId = strcat(SubAccountId, '/resourcegroups/', x_ResourceGroupName);\nlet all = costs | where isnotempty(x_ResourceGroupId) | summarize sum(EffectiveCost) by x_ResourceGroupId;\nlet count = toscalar(all | order by sum_EffectiveCost desc | count);\nlet topX = all | order by sum_EffectiveCost desc | limit maxGroupCount;\nlet otherId = '(others)';\ncosts\n//\n// Group rows after max count\n| extend inTopX = x_ResourceGroupId in (topX)\n| extend x_ResourceGroupId = iff(inTopX, x_ResourceGroupId, otherId)\n| extend x_ResourceGroupName = iff(inTopX, x_ResourceGroupName, strcat('(', (count - maxGroupCount), ' others)'))\n//\n| summarize \n    EffectiveCost = round(sum(EffectiveCost), 2),\n    SubAccountName = take_any(SubAccountName),\n    x_ResourceGroupName = take_any(x_ResourceGroupName)\n    by\n    ChargePeriodStart,\n    x_ResourceGroupId\n| project ChargePeriodStart, EffectiveCost, RG = iff(x_ResourceGroupId == otherId, x_ResourceGroupName, strcat(x_ResourceGroupName, ' (', SubAccountName, ')'))\n| order by EffectiveCost desc\n| render columnchart",
+      "id": "ceca582d-767a-49ca-8921-ced3d27f21a4",
+      "usedVariables": [
+        "AICostsByMonth",
+        "maxGroupCount"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let monthname = dynamic(['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);\nlet data = (\n    AICostsByMonth\n    | extend x_ResourceGroupId = strcat(SubAccountId, '/resourcegroups/', x_ResourceGroupName)\n    | summarize \n        EffectiveCost  = sum(EffectiveCost),\n        SubAccountName = take_any(SubAccountName),\n        x_ResourceGroupName = take_any(x_ResourceGroupName)\n        by\n        ChargePeriodStart,\n        x_ResourceGroupId\n    | as per\n    | union (\n        per\n        | summarize \n            EffectiveCost  = sum(EffectiveCost),\n            SubAccountName = take_any(SubAccountName),\n            x_ResourceGroupName = take_any(x_ResourceGroupName)\n            by\n            x_ResourceGroupId\n    )\n    | order by ChargePeriodStart asc\n    | extend EffectiveCost = todouble(round(EffectiveCost, 2))\n    | extend ChargePeriod = iff(isempty(ChargePeriodStart), strcat('Total'), strcat(format_datetime(ChargePeriodStart, 'yyyy-MM - '), monthname[monthofyear(ChargePeriodStart)]))\n);\ndata | evaluate pivot(ChargePeriod, sum(EffectiveCost), x_ResourceGroupName, SubAccountName)\n| order by todouble(column_ifexists('Total', real(null))) desc",
+      "id": "27844176-8442-47c3-b36e-63d994b7f9d2",
+      "usedVariables": [
+        "AICostsByMonth"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let costs = AICostsByMonth\n    | extend TagValue = iff(isempty(tagName), '(select a Tag name)', tostring(Tags[tagName]))\n    | extend TagValue = iff(isempty(TagValue), '(untagged)', TagValue);\nlet topX = costs | summarize sum(EffectiveCost) by TagValue | order by sum_EffectiveCost desc | limit maxGroupCount | project TagValue;\ncosts\n| extend TagValue = iff(TagValue in (topX), TagValue, '(others)')\n| summarize EffectiveCost = round(sum(EffectiveCost), 2) by ChargePeriodStart, TagValue\n| order by EffectiveCost desc\n| render columnchart",
+      "id": "af0e39ad-b5a0-49fa-aca0-e26856f53608",
+      "usedVariables": [
+        "AICostsByMonth",
+        "tagName",
+        "maxGroupCount"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let monthname = dynamic(['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);\nlet data = (\n    AICostsByMonth\n    | extend TagValue = iff(isempty(tagName), '(select a Tag name)', tostring(Tags[tagName]))\n    | extend TagValue = iff(isempty(TagValue), '(untagged)', TagValue)\n    | summarize EffectiveCost = sum(EffectiveCost) by ChargePeriodStart, TagValue\n    | as per\n    | union (per | summarize EffectiveCost = sum(EffectiveCost) by TagValue)\n    | order by ChargePeriodStart asc\n    | extend EffectiveCost = todouble(round(EffectiveCost, 2))\n    | extend ChargePeriod = iff(isempty(ChargePeriodStart), strcat('Total'), strcat(format_datetime(ChargePeriodStart, 'yyyy-MM - '), monthname[monthofyear(ChargePeriodStart)]))\n);\ndata | evaluate pivot(ChargePeriod, sum(EffectiveCost), TagValue)\n| order by todouble(column_ifexists('Total', real(null))) desc",
+      "id": "fe1e0e07-1466-4837-9027-1979ba60f699",
+      "usedVariables": [
+        "AICostsByMonth",
+        "tagName"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let costs = AICostsByMonth;\nlet all = costs | where isnotempty(ResourceId) | summarize sum(EffectiveCost) by ResourceId;\nlet count = toscalar(all | order by sum_EffectiveCost desc | count);\nlet topX = all | order by sum_EffectiveCost desc | limit maxGroupCount;\nlet otherId = '(others)';\ncosts\n//\n// Group rows after max count\n| extend inTopX = ResourceId in (topX)\n| extend ResourceId = iff(inTopX, ResourceId, otherId)\n| extend ResourceName = iff(inTopX, ResourceName, strcat('(', (count - maxGroupCount), ' others)'))\n//\n| summarize \n    EffectiveCost = round(sum(EffectiveCost), 2),\n    ResourceType = take_any(ResourceType),\n    ResourceName = take_any(ResourceName)\n    by\n    ChargePeriodStart,\n    ResourceId\n| project ChargePeriodStart, EffectiveCost, RG = iff(ResourceId == otherId, ResourceName, strcat(ResourceName, ' (', ResourceType, ')'))\n| order by EffectiveCost desc\n| render columnchart",
+      "id": "7f87f2ef-663c-4dc3-864f-d0a18d2549c4",
+      "usedVariables": [
+        "AICostsByMonth",
+        "maxGroupCount"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let costs = AICostsByDay;\nlet all = costs | summarize sum(EffectiveCost) by ResourceId;\nlet count = toscalar(all | order by sum_EffectiveCost desc | count);\nlet topX = all | order by sum_EffectiveCost desc | limit maxGroupCount;\nlet otherId = '(others)';\ncosts\n//\n// Group rows after max count\n| extend inTopX = ResourceId in (topX)\n| extend ResourceId = iff(inTopX, ResourceId, otherId)\n| extend ResourceName = iff(inTopX, ResourceName, strcat('(', (count - maxGroupCount), ' others)'))\n//\n| summarize \n    EffectiveCost = round(sum(EffectiveCost), 2),\n    ResourceType = take_any(ResourceType),\n    ResourceName = take_any(ResourceName)\n    by\n    ChargePeriodStart,\n    ResourceId\n| project ChargePeriodStart, EffectiveCost, RG = iff(ResourceId == otherId, ResourceName, strcat(ResourceName, ' (', ResourceType, ')'))\n| order by EffectiveCost desc\n| render columnchart",
+      "id": "7bb03f00-a3fe-426e-85c4-a1c919ad6d9b",
+      "usedVariables": [
+        "AICostsByDay",
+        "maxGroupCount"
+      ]
+    },
+    {
+      "dataSource": {
+        "kind": "inline",
+        "dataSourceId": "23540be2-ffc9-4b61-8c4c-05e493e682a6"
+      },
+      "text": "let monthname = dynamic(['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']);\nlet data = (\n    AICostsByMonth\n    | summarize \n        EffectiveCost  = sum(EffectiveCost),\n        ResourceName = take_any(ResourceName),\n        ResourceType = take_any(ResourceType),\n        RegionName = take_any(RegionName),\n        x_ResourceGroupName = take_any(x_ResourceGroupName),\n        SubAccountName = take_any(SubAccountName)\n        by\n        ChargePeriodStart,\n        ResourceId\n    | as per\n    | union (\n        per\n        | summarize \n            EffectiveCost  = sum(EffectiveCost)\n            by\n            ResourceId,\n            ResourceName,\n            ResourceType,\n            RegionName,\n            x_ResourceGroupName,\n            SubAccountName\n    )\n    | order by ChargePeriodStart asc\n    | extend EffectiveCost = todouble(round(EffectiveCost, 2))\n    | extend ChargePeriod = iff(isempty(ChargePeriodStart), strcat('Total'), strcat(format_datetime(ChargePeriodStart, 'yyyy-MM - '), monthname[monthofyear(ChargePeriodStart)]))\n);\ndata | evaluate pivot(ChargePeriod, sum(EffectiveCost), ResourceName, ResourceType, RegionName, x_ResourceGroupName, SubAccountName)\n| order by todouble(column_ifexists('Total', real(null))) desc",
+      "id": "30bcc0a9-481f-42ec-b4d6-55003477961d",
+      "usedVariables": [
+        "AICostsByMonth"
       ]
     }
   ]
